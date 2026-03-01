@@ -22,7 +22,7 @@ const Checkout = () => {
     <main className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4">
       <div className="bg-white shadow-2xl rounded-2xl p-8 md:p-12 w-full max-w-3xl">
         <h1 className="text-4xl font-extrabold text-green-600 mb-8 text-center tracking-wide">
-          Checkout
+          Confirm Order
         </h1>
 
         {/* Delivery Method */}
@@ -84,7 +84,7 @@ const Checkout = () => {
           </div>
 
           <div className="text-center mt-6 space-y-1">
-            <p className="text-lg font-semibold text-gray-800">HeranBites</p>
+            <p className="text-lg font-semibold text-gray-800">FastFoods</p>
             <p className="text-gray-600 italic">Thank you for your order!</p>
             <p className="text-gray-500 font-mono">ORDER# {orderNumber}</p>
           </div>
@@ -95,7 +95,7 @@ const Checkout = () => {
             type="submit"
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-10 rounded-xl transition-transform transform hover:scale-105 shadow-md"
           >
-            Pay & Place Order
+            Pay Order
           </button>
         </form>
       </div>

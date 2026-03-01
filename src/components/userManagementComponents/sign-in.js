@@ -71,7 +71,7 @@ const Sign_In = () => {
             type="submit"
             className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition-colors"
           >
-            Sign In
+            Login
           </button>
         </form>
 
@@ -79,7 +79,7 @@ const Sign_In = () => {
         <p className="text-center text-gray-600 mt-4">
           Don’t have an account yet?{" "}
           <Link to="/sign-up" className="text-green-600 hover:underline">
-            Sign Up
+            Create
           </Link>
         </p>
 
