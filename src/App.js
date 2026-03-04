@@ -13,6 +13,9 @@ import Menu from "./components/pageComponents/MenuPage/menu";
 import Sign_In from "./components/userManagementComponents/sign-in";
 import Sign_Up from "./components/userManagementComponents/sign-up";
 
+import TrackOrders from "./components/pageComponents/TrackOrderPage";
+import Dashboard from "./components/pageComponents/BusinessDashboardPage";
+
 import Header from './components/sectionComponents/header';
 import Footer from './components/sectionComponents/footer';
 
@@ -35,6 +38,8 @@ function App() {
               <Route path="/success" element={<PaymentSuccessPage />} />
               <Route path="/sign-in" element={<Sign_In />} />
               <Route path="/sign-up" element={<Sign_Up />} />
+              <Route path="/track-orders" element={<TrackOrders />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </div>
 

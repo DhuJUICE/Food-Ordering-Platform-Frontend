@@ -80,6 +80,18 @@ const Header = () => {
             >
               Menu
             </button>
+			<button
+              onClick={() => navigate('/dashboard')}
+              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
+            >
+              Dashboard
+            </button>
+			<button
+              onClick={() => navigate('/track-orders')}
+              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
+            >
+              Track Order
+            </button>
           </li>
         </ul>
       </nav>

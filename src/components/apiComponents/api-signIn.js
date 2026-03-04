@@ -1,7 +1,7 @@
-import { API_URL } from "./api-base-url"; // Import the API base URL
-import { setAccessToken, setRefreshToken} from '../userManagementComponents/tokenManagement/tokenManager'; // Import token manager functions
+import { API_URL } from "./api-base-url";
+import { setAccessToken, setRefreshToken } from '../userManagementComponents/tokenManagement/tokenManager';
+import {jwtDecode} from 'jwt-decode'; // decode JWT
 
-// Function to handle the sign-in API call
 export const signIn = async (userName, userPassword) => {
   try {
     const response = await fetch(`${API_URL}/api/token`, {
@@ -13,9 +13,15 @@ export const signIn = async (userName, userPassword) => {
     const data = await response.json();
 
     if (data.access) {
-      // Use token manager to store tokens
-      setAccessToken(data.access); // Save access token with expiry time
-      setRefreshToken(data.refresh); // Save refresh token without expiry time (optional)
+      // Save tokens
+      setAccessToken(data.access);
+      setRefreshToken(data.refresh);
+
+      // Decode JWT to get user ID
+      const decoded = jwtDecode(data.access);
+      const userId = decoded.user_id; // SimpleJWT uses "user_id" by default
+      localStorage.setItem('userId', userId); // store it for later
+	  console.log(localStorage.getItem('userId', userId));
 
       return { success: true };
     } else {
