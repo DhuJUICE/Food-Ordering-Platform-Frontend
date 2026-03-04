@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { fetchProducts } from "../../apiComponents/api-products";
+import { fetchMenuProducts } from "../../apiComponents/api-products";
 
 const ProductContext = createContext();
 
@@ -21,7 +21,7 @@ export const ProductProvider = ({ children }) => {
   const loadProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchProducts();
+      const data = await fetchMenuProducts();
       setProductList(data || []);
     } catch (err) {
       console.error("Error fetching products:", err);

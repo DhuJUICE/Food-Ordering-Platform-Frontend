@@ -15,6 +15,7 @@ import Sign_Up from "./components/userManagementComponents/sign-up";
 
 import TrackOrders from "./components/pageComponents/TrackOrderPage";
 import Dashboard from "./components/pageComponents/BusinessDashboardPage";
+import ManageMenu from "./components/pageComponents/MenuManagementPage";
 
 import Header from './components/sectionComponents/header';
 import Footer from './components/sectionComponents/footer';
@@ -40,6 +41,7 @@ function App() {
               <Route path="/sign-up" element={<Sign_Up />} />
               <Route path="/track-orders" element={<TrackOrders />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/manage-menu" element={<ManageMenu />} />
             </Routes>
           </div>
 
