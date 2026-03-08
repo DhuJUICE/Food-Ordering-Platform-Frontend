@@ -96,3 +96,27 @@ export const decrementCartItemAPI = async (product) => {
 export const removeItemFromCartAPI = async (product) => {
   return updateCartAPI({ action: "remove", product });
 };
+
+export const clearCartAPI = async () => {
+  try {
+    const token = getAccessToken();
+    if (!token) return { success: false, message: "User not authenticated" };
+
+    const response = await fetch(`${API_URL}/api/cart`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ action: "clear", productId: "0" }), // productId required by backend, can be dummy
+    });
+
+    const result = await response.json();
+    return response.ok
+      ? result
+      : { success: false, message: result.message || "Failed to clear cart" };
+  } catch (error) {
+    console.error("Clear cart error:", error);
+    return { success: false, message: "An error occurred while clearing cart" };
+  }
+};

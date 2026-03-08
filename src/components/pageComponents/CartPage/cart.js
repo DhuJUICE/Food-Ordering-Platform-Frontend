@@ -60,10 +60,10 @@ const Cart = () => {
   return (
     <main className="min-h-screen bg-gray-50 py-8 px-4">
       <section className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-green-600 mb-6 text-center">Your Order</h2>
+        <h2 className="text-2xl font-bold text-green-600 mb-6 text-center">My Order</h2>
 
         {cart.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">Your cart is empty.</p>
+          <p className="text-gray-500 text-center py-8">Your have not placed an order yet</p>
         ) : (
           <div className="grid gap-6">
             {cart.map(item => (
@@ -97,7 +97,7 @@ const Cart = () => {
               Subtotal: <span className="text-green-600">R {subtotal.toFixed(2)}</span>
             </p>
             <button onClick={goToCheckout} className="mt-4 sm:mt-0 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg">
-              Proceed to Payment
+              Confirm Order
             </button>
           </div>
         )}

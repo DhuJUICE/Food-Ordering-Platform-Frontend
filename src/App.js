@@ -3,22 +3,23 @@ import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { CartProvider } from "./components/pageComponents/CartPage/cart-context";
 import { ProductProvider } from "./components/pageComponents/MenuPage/product-context";
 
+import Header from './components/sectionComponents/header';
+import Footer from './components/sectionComponents/footer';
+
 import ScrollToTop from "./components/scrollComponents/scrollToTop";
 
-// Importing your components
 import Cart from "./components/pageComponents/CartPage/cart";
 import Checkout from "./components/pageComponents/CheckoutPage/checkout";
 import PaymentSuccessPage from "./components/pageComponents/CheckoutPage/PaymentSuccess";
+import PaymentFailurePage from "./components/pageComponents/CheckoutPage/PaymentFailure";
+import TrackOrders from "./components/pageComponents/TrackOrderPage";
+
 import Menu from "./components/pageComponents/MenuPage/menu";
 import Sign_In from "./components/userManagementComponents/sign-in";
 import Sign_Up from "./components/userManagementComponents/sign-up";
 
-import TrackOrders from "./components/pageComponents/TrackOrderPage";
 import Dashboard from "./components/pageComponents/BusinessDashboardPage";
 import ManageMenu from "./components/pageComponents/MenuManagementPage";
-
-import Header from './components/sectionComponents/header';
-import Footer from './components/sectionComponents/footer';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/success" element={<PaymentSuccessPage />} />
+              <Route path="/failure" element={<PaymentFailurePage />} />
               <Route path="/sign-in" element={<Sign_In />} />
               <Route path="/sign-up" element={<Sign_Up />} />
               <Route path="/track-orders" element={<TrackOrders />} />

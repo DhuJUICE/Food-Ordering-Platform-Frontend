@@ -44,7 +44,7 @@ const Header = () => {
               className="flex items-center space-x-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
             >
               <FaShoppingCart />
-              <span>Cart</span>
+              <span>Your Order</span>
             </button>
             {totalQuantity > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
@@ -82,24 +82,10 @@ const Header = () => {
             </button>
 			
 			<button
-              onClick={() => navigate('/dashboard')}
-              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-            >
-              Dashboard
-            </button>
-			
-			<button
               onClick={() => navigate('/track-orders')}
               className="text-gray-700 hover:text-green-600 font-medium transition-colors"
             >
               Track Order
-            </button>
-			
-			<button
-              onClick={() => navigate('/manage-menu')}
-              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-            >
-              Manage Menu
             </button>
 
           </li>

@@ -24,38 +24,21 @@ const PaymentSuccess = ({ orderNumber, total }) => {
         <h1 className="text-3xl font-bold text-green-600 mb-4">Payment Successful!</h1>
         <p className="text-gray-700 mb-6">Thank you for your order. Your payment was processed successfully.</p>
 
-        {/* Order Summary */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-inner">
-          <p className="text-lg font-semibold text-gray-800 mb-2">Order Number:</p>
-          <p className="text-green-600 font-bold text-xl mb-2">{orderNumber}</p>
-          {total && (
-            <>
-              <p className="text-lg font-semibold text-gray-800 mb-1">Total Paid:</p>
-              <p className="text-gray-700 font-medium text-lg">R {total.toFixed(2)}</p>
-            </>
-          )}
-        </div>
-
         {/* Call-to-Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => navigate("/")}
             className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
           >
-            Back to Menu
+            Place another order
           </button>
           <button
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate("/track-orders")}
             className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors"
           >
             View My Orders
           </button>
         </div>
-
-        {/* Footer */}
-        <p className="text-gray-400 text-sm mt-8">
-          © 2025 Yummy Tummy's. All Rights Reserved. Developed by HeranSoft
-        </p>
       </div>
     </main>
   );
