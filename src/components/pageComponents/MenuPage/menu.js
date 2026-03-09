@@ -1,24 +1,16 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { addToCart } from "../../apiComponents/api-cart";
 import { useCart } from "../CartPage/cart-context";
-import { useProducts } from "./product-context"; // <-- use the new context
+import { useProducts } from "./product-context"; // <-- product context
+import { addToCart } from "../../apiComponents/api-cart";
 
 const MenuPage = () => {
-  const navigate = useNavigate();
   const { cart, setCart } = useCart();
   const { products, loading } = useProducts(); // <-- grab from context
 
   const handleAddToCart = async (product) => {
-    const accessToken = !!localStorage.getItem("accessToken");
-    if (!accessToken) {
-      navigate("/sign-in");
-      return;
-    }
-
     const quantity = 1;
 
-    // Call API
+    // Call API (session-based)
     const result = await addToCart(product, quantity);
     if (!result.success) {
       alert(result.message || "Failed to add item.");

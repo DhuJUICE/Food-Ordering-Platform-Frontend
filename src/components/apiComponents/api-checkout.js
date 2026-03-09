@@ -3,11 +3,11 @@ import { API_URL } from "./api-base-url";
 
 export const processPayment = async (totalPrice, orderNumber, deliveryMethod, customerName, customerPhone, customerEmail) => {
   try {
+
     const response = await fetch(`${API_URL}/api/checkout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       body: JSON.stringify({
         totalPurchaseTotal: totalPrice.toFixed(2),
@@ -17,8 +17,9 @@ export const processPayment = async (totalPrice, orderNumber, deliveryMethod, cu
 		customerPhone: customerPhone,
 		customerEmail: customerEmail
       }),
+	  credentials: "include", // ⚡ ensures session cookie is sent
     });
-
+	
     const data = await response.json();
 
     if (response.ok && data.success) {

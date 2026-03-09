@@ -1,27 +1,22 @@
 // api-cart.js
 import { API_URL } from "./api-base-url";
-import { getAccessToken } from "../userManagementComponents/tokenManagement/tokenManager";
 
-// Fetch all cart items with product details
+/**
+ * Fetch all cart items from the backend.
+ * Uses session-based cart, no token required.
+ */
 export const fetchCartItems = async () => {
   try {
-    const token = getAccessToken();
-    if (!token) return [];
-
     const response = await fetch(`${API_URL}/api/cart`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      credentials: "include", // ⚡ ensures session cookie is sent
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
-        console.warn("Unauthorized: User needs to log in.");
-      } else {
-        console.warn("Failed to fetch cart.");
-      }
+      console.warn("Failed to fetch cart.");
       return [];
     }
 
@@ -30,6 +25,7 @@ export const fetchCartItems = async () => {
 
     const cartItems = result.cart;
 
+    // Map backend items to frontend-friendly format
     return Object.values(cartItems).map(item => ({
       id: item.id,
       name: item.prodName,
@@ -44,14 +40,13 @@ export const fetchCartItems = async () => {
   }
 };
 
-// Unified function to update the cart (add, remove, increment, decrement)
+/**
+ * Unified function to update the cart.
+ * Handles add, remove, increment, decrement, clear.
+ */
 export const updateCartAPI = async ({ action, product, quantity }) => {
   try {
-    const token = getAccessToken();
-    if (!token) return { success: false, message: "User not authenticated" };
-
-    // Build the payload according to backend expectations
-    const body = { action, productId: product.id };
+    const body = { action, productId: String(product.id) };
 
     if (action === "add") {
       body.quantity = quantity || 1;
@@ -64,9 +59,9 @@ export const updateCartAPI = async ({ action, product, quantity }) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
+      credentials: "include",
     });
 
     const result = await response.json();
@@ -80,35 +75,38 @@ export const updateCartAPI = async ({ action, product, quantity }) => {
   }
 };
 
-// Usage helpers
+/** ================== Usage Helpers ================== */
+
+/** Add product to cart */
 export const addToCart = async (product, quantity) => {
   return updateCartAPI({ action: "add", product, quantity });
 };
 
+/** Increment product quantity in cart */
 export const incrementCartItemAPI = async (product) => {
   return updateCartAPI({ action: "increment", product });
 };
 
+/** Decrement product quantity in cart */
 export const decrementCartItemAPI = async (product) => {
   return updateCartAPI({ action: "decrement", product });
 };
 
+/** Remove product from cart */
 export const removeItemFromCartAPI = async (product) => {
   return updateCartAPI({ action: "remove", product });
 };
 
+/** Clear all items from cart */
 export const clearCartAPI = async () => {
   try {
-    const token = getAccessToken();
-    if (!token) return { success: false, message: "User not authenticated" };
-
     const response = await fetch(`${API_URL}/api/cart`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ action: "clear", productId: "0" }), // productId required by backend, can be dummy
+      body: JSON.stringify({ action: "clear", productId: "0" }), // dummy productId
+      credentials: "include",
     });
 
     const result = await response.json();

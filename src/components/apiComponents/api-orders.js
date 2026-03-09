@@ -10,10 +10,12 @@ const getAuthHeaders = () => ({
 // ORDER MANAGEMENT - ORDER API CALLS
 
 // Fetch orders for a specific user (Track Order Page)
-export const fetchUserOrders = async (userId) => {
+export const fetchUserOrders = async () => {
   try {
-    const response = await fetch(`${API_URL}/api/orders/${userId}`, {
-      headers: getAuthHeaders(),
+	const customerPhone = parseInt(localStorage.getItem("customerPhone"));
+    const response = await fetch(`${API_URL}/api/orders/track/${customerPhone}`, {
+      headers: {"Content-Type": "application/json"},
+	  credentials: "include", // ⚡ ensures session cookie is sent
     });
 
     if (!response.ok) throw new Error("Failed to fetch user orders");
@@ -30,6 +32,7 @@ export const fetchAllOrders = async () => {
   try {
     const response = await fetch(`${API_URL}/api/orders/all`, {
       headers: getAuthHeaders(),
+	  credentials: "include", // ⚡ ensures session cookie is sent
     });
 
     if (!response.ok) throw new Error("Failed to fetch all orders");
@@ -44,10 +47,11 @@ export const fetchAllOrders = async () => {
 // Update order status
 export const updateOrderStatus = async (orderId, newStatus, collected = false) => {
   try {
-    const response = await fetch(`${API_URL}/api/orders/${orderId}`, {
+    const response = await fetch(`${API_URL}/api/orders/${orderId}/status`, {
       method: "PUT",
       headers: getAuthHeaders(),
       body: JSON.stringify({ status: newStatus, collected }),
+	  credentials: "include", // ⚡ ensures session cookie is sent
     });
 
     if (!response.ok) throw new Error("Failed to update order status");

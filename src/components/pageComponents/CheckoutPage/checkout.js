@@ -43,6 +43,8 @@ const Checkout = () => {
       return;
     }
 
+	localStorage.setItem("customerPhone", customerPhone);
+
     await processPayment(
       totalPrice,
       orderNumber,

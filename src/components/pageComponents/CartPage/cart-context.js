@@ -1,53 +1,84 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
-import { fetchCartItems } from "../../apiComponents/api-cart";
-import { getAccessToken } from "../../userManagementComponents/tokenManagement/tokenManager";
+import { fetchCartItems, updateCartAPI } from "../../apiComponents/api-cart";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCartState] = useState(() => {
-    // Initialize cart from localStorage if available
     const saved = localStorage.getItem("cart");
     return saved ? JSON.parse(saved) : [];
   });
   const [loading, setLoading] = useState(false);
 
-  // Save cart to both state and localStorage
   const setCart = (items) => {
     setCartState(items);
     localStorage.setItem("cart", JSON.stringify(items));
   };
 
-  // Load cart items from API (memoized)
   const loadCart = useCallback(async () => {
-    const token = getAccessToken();
-    if (!token) {
-      setCart([]);
-      return;
-    }
-
     setLoading(true);
     try {
       const items = await fetchCartItems();
-      setCart(items || []);
+      setCart(Object.values(items || {}));
     } catch (err) {
-      console.error("Error fetching cart items:", err);
+      console.error("Error fetching cart:", err);
       setCart([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Fetch cart once on mount
   useEffect(() => {
     loadCart();
   }, [loadCart]);
 
-  // Helper: total quantity
+  const addToCart = async (product, quantity = 1) => {
+    const result = await updateCartAPI({ action: "add", product, quantity });
+    if (result.success) setCart(Object.values(result.cart));
+    return result;
+  };
+
+  const incrementItem = async (product) => {
+    const result = await updateCartAPI({ action: "increment", product });
+    if (result.success) setCart(Object.values(result.cart));
+    return result;
+  };
+
+  const decrementItem = async (product) => {
+    const result = await updateCartAPI({ action: "decrement", product });
+    if (result.success) setCart(Object.values(result.cart));
+    return result;
+  };
+
+  const removeItem = async (product) => {
+    const result = await updateCartAPI({ action: "remove", product });
+    if (result.success) setCart(Object.values(result.cart));
+    return result;
+  };
+
+  const clearCart = async () => {
+    const result = await updateCartAPI({ action: "clear", product: { id: "0" } });
+    if (result.success) setCart([]);
+    return result;
+  };
+
   const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, setCart, loadCart, totalQuantity, loading }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        setCart,
+        loadCart,
+        addToCart,
+        incrementItem,
+        decrementItem,
+        removeItem,
+        clearCart,
+        totalQuantity,
+        loading,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
