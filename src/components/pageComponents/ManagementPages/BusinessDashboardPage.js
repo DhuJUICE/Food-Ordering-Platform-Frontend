@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchAllOrders, updateOrderStatus } from "../apiComponents/api-orders";
+import { fetchAllOrders, updateOrderStatus } from "../../apiComponents/api-orders";
 
 const STATUS_OPTIONS = ["pending", "preparing", "done", "cancelled"];
 

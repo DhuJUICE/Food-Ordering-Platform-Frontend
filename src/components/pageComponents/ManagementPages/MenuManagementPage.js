@@ -5,7 +5,7 @@ import {
   deleteProduct,
   updateProduct,
   createProduct, // new function
-} from "../apiComponents/api-products";
+} from "../../apiComponents/api-products";
 
 const MenuManagementPage = () => {
   const [products, setProducts] = useState([]);

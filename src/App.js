@@ -8,18 +8,18 @@ import Footer from './components/sectionComponents/footer';
 
 import ScrollToTop from "./components/scrollComponents/scrollToTop";
 
+import Sign_In from "./components/userManagementComponents/sign-in";
+import Sign_Up from "./components/userManagementComponents/sign-up";
+
+import Dashboard from "./components/pageComponents/ManagementPages/BusinessDashboardPage";
+import ManageMenu from "./components/pageComponents/ManagementPages/MenuManagementPage";
+
+import Menu from "./components/pageComponents/MenuPage/menu";
 import Cart from "./components/pageComponents/CartPage/cart";
 import Checkout from "./components/pageComponents/CheckoutPage/checkout";
 import PaymentSuccessPage from "./components/pageComponents/CheckoutPage/PaymentSuccess";
 import PaymentFailurePage from "./components/pageComponents/CheckoutPage/PaymentFailure";
-import TrackOrders from "./components/pageComponents/TrackOrderPage";
-
-import Menu from "./components/pageComponents/MenuPage/menu";
-import Sign_In from "./components/userManagementComponents/sign-in";
-import Sign_Up from "./components/userManagementComponents/sign-up";
-
-import Dashboard from "./components/pageComponents/BusinessDashboardPage";
-import ManageMenu from "./components/pageComponents/MenuManagementPage";
+import TrackOrders from "./components/pageComponents/OrderPages/TrackOrderPage";
 
 function App() {
   return (
