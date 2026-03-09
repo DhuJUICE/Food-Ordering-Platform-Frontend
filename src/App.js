@@ -19,7 +19,7 @@ import Cart from "./components/pageComponents/CartPage/cart";
 import Checkout from "./components/pageComponents/CheckoutPage/checkout";
 import PaymentSuccessPage from "./components/pageComponents/CheckoutPage/PaymentSuccess";
 import PaymentFailurePage from "./components/pageComponents/CheckoutPage/PaymentFailure";
-import TrackOrders from "./components/pageComponents/OrderPages/TrackOrderPage";
+import TrackOrders from "./components/pageComponents/TrackOrderPage/TrackOrderPage";
 
 function App() {
   return (
