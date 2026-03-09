@@ -10,7 +10,8 @@ const Checkout = () => {
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
+
+  const [phoneError, setPhoneError] = useState("");
 
   const deliveryFee = 50;
 
@@ -28,7 +29,6 @@ const Checkout = () => {
     event.preventDefault();
 
     if (cart.length === 0) {
-      alert("Your cart is empty!");
       return;
     }
 
@@ -38,20 +38,40 @@ const Checkout = () => {
   const handleSubmitDetails = async (event) => {
     event.preventDefault();
 
-    if (!customerName || !customerPhone || !customerEmail) {
-      alert("Please fill in all fields");
+    setPhoneError("");
+
+    if (!customerPhone) {
+      setPhoneError("Please enter your phone number");
       return;
     }
 
-	localStorage.setItem("customerPhone", customerPhone);
+    // Trim and clean phone
+    let phone = customerPhone.trim().replace(/\s|-/g, "");
+
+    // Normalization & Validation
+    if (phone.startsWith("0")) {
+      if (phone.length !== 10) {
+        setPhoneError("Phone must be 10 digits starting with 0 (e.g. 0821234567)");
+        return;
+      }
+      phone = "+27" + phone.slice(1);
+    } else {
+      if (phone.length !== 9) {
+        setPhoneError("Phone must be 9 digits without the 0");
+        return;
+      }
+      phone = "+27" + phone;
+    }
+
+    // Save normalized phone
+    localStorage.setItem("customerPhone", phone);
 
     await processPayment(
       totalPrice,
       orderNumber,
       deliveryMethod,
       customerName,
-      customerPhone,
-      customerEmail
+      phone
     );
   };
 
@@ -115,27 +135,32 @@ const Checkout = () => {
 
             <form onSubmit={handleSubmitDetails} className="space-y-4">
 
+              {/* PHONE */}
+              <div>
+                <input
+                  type="text"
+                  placeholder="Phone Number"
+                  value={customerPhone}
+                  onChange={(e) => {
+                    setCustomerPhone(e.target.value);
+                    setPhoneError("");
+                  }}
+                  className={`w-full border rounded-lg p-3 ${
+                    phoneError ? "border-red-500" : ""
+                  }`}
+                />
+
+                {phoneError && (
+                  <p className="text-red-500 text-sm mt-1">{phoneError}</p>
+                )}
+              </div>
+
+              {/* NAME OPTIONAL */}
               <input
                 type="text"
-                placeholder="Full Name"
+                placeholder="Name (optional)"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full border rounded-lg p-3"
-              />
-
-              <input
-                type="text"
-                placeholder="Phone Number"
-                value={customerPhone}
-                onChange={(e) => setCustomerPhone(e.target.value)}
-                className="w-full border rounded-lg p-3"
-              />
-
-              <input
-                type="email"
-                placeholder="Email Address"
-                value={customerEmail}
-                onChange={(e) => setCustomerEmail(e.target.value)}
                 className="w-full border rounded-lg p-3"
               />
 

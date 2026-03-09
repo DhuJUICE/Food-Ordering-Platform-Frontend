@@ -1,7 +1,7 @@
 // api-checkout.js
 import { API_URL } from "./api-base-url";
 
-export const processPayment = async (totalPrice, orderNumber, deliveryMethod, customerName, customerPhone, customerEmail) => {
+export const processPayment = async (totalPrice, orderNumber, deliveryMethod, customerName, customerPhone) => {
   try {
 
     const response = await fetch(`${API_URL}/api/checkout`, {
@@ -14,8 +14,7 @@ export const processPayment = async (totalPrice, orderNumber, deliveryMethod, cu
         orderNumber: orderNumber,
         deliveryMethod: deliveryMethod,
 		customerName: customerName,
-		customerPhone: customerPhone,
-		customerEmail: customerEmail
+		customerPhone: customerPhone
       }),
 	  credentials: "include", // ⚡ ensures session cookie is sent
     });

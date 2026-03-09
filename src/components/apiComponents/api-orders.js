@@ -12,7 +12,7 @@ const getAuthHeaders = () => ({
 // Fetch orders for a specific user (Track Order Page)
 export const fetchUserOrders = async () => {
   try {
-	const customerPhone = parseInt(localStorage.getItem("customerPhone"));
+	const customerPhone = localStorage.getItem("customerPhone");
     const response = await fetch(`${API_URL}/api/orders/track/${customerPhone}`, {
       headers: {"Content-Type": "application/json"},
 	  credentials: "include", // ⚡ ensures session cookie is sent
