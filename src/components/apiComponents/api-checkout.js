@@ -1,7 +1,7 @@
 // api-checkout.js
 import { API_URL } from "./api-base-url";
 
-export const processPayment = async (totalPrice, orderNumber, deliveryMethod) => {
+export const processPayment = async (totalPrice, orderNumber, deliveryMethod, customerName, customerPhone, customerEmail) => {
   try {
     const response = await fetch(`${API_URL}/api/checkout`, {
       method: "POST",
@@ -13,6 +13,9 @@ export const processPayment = async (totalPrice, orderNumber, deliveryMethod) =>
         totalPurchaseTotal: totalPrice.toFixed(2),
         orderNumber: orderNumber,
         deliveryMethod: deliveryMethod,
+		customerName: customerName,
+		customerPhone: customerPhone,
+		customerEmail: customerEmail
       }),
     });
 

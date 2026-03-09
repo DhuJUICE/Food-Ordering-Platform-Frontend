@@ -1,21 +1,56 @@
 import React, { useState } from "react";
-import { useCart } from "../CartPage/cart-context"; 
+import { useCart } from "../CartPage/cart-context";
 import { processPayment } from "../../apiComponents/api-checkout";
 
 const Checkout = () => {
-  const { cart } = useCart(); // read from context only
+  const { cart } = useCart();
+
   const [deliveryMethod, setDeliveryMethod] = useState("collect");
+  const [showModal, setShowModal] = useState(false);
+
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+
   const deliveryFee = 50;
 
-  const subtotal = cart.reduce((sum, item) => sum + item.prodPrice * item.quantity, 0);
-  const totalPrice = deliveryMethod === "delivery" ? subtotal + deliveryFee : subtotal;
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.prodPrice * item.quantity,
+    0
+  );
+
+  const totalPrice =
+    deliveryMethod === "delivery" ? subtotal + deliveryFee : subtotal;
 
   const orderNumber = Math.floor(1000 + Math.random() * 9000);
 
-  const handleCheckout = async (event) => {
+  const handleOpenModal = (event) => {
     event.preventDefault();
-    if (cart.length === 0) return alert("Your cart is empty!");
-    await processPayment(totalPrice, orderNumber, deliveryMethod);
+
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    setShowModal(true);
+  };
+
+  const handleSubmitDetails = async (event) => {
+    event.preventDefault();
+
+    if (!customerName || !customerPhone || !customerEmail) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    await processPayment(
+      totalPrice,
+      orderNumber,
+      deliveryMethod,
+      customerName,
+      customerPhone,
+      customerEmail
+    );
   };
 
   return (
@@ -25,43 +60,17 @@ const Checkout = () => {
           Confirm Order
         </h1>
 
-        {/* Delivery Method */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700">Delivery Method</h2>
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="deliveryMethod"
-                value="collect"
-                checked={deliveryMethod === "collect"}
-                onChange={() => setDeliveryMethod("collect")}
-                className="w-5 h-5 text-green-500 accent-green-500"
-              />
-              <span className="text-gray-800 font-medium">Collect (No Delivery Fee)</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="deliveryMethod"
-                value="delivery"
-                checked={deliveryMethod === "delivery"}
-                onChange={() => setDeliveryMethod("delivery")}
-                className="w-5 h-5 text-green-500 accent-green-500"
-              />
-              <span className="text-gray-800 font-medium">Delivery (+R{deliveryFee})</span>
-            </label>
-          </div>
-        </div>
-
         {/* Receipt */}
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm mb-8">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-700 border-b pb-2">Your Order</h2>
           <ul className="divide-y divide-gray-200 mb-4">
-            {cart.map(item => (
+            {cart.map((item) => (
               <li key={item.id} className="flex justify-between py-3">
-                <span className="text-gray-800 font-medium">{item.name} x {item.quantity}</span>
-                <span className="text-gray-700">R{(item.prodPrice * item.quantity).toFixed(2)}</span>
+                <span className="text-gray-800 font-medium">
+                  {item.name} x {item.quantity}
+                </span>
+                <span className="text-gray-700">
+                  R{(item.prodPrice * item.quantity).toFixed(2)}
+                </span>
               </li>
             ))}
           </ul>
@@ -82,15 +91,9 @@ const Checkout = () => {
             <span>Total:</span>
             <span>R{totalPrice.toFixed(2)}</span>
           </div>
-
-          <div className="text-center mt-6 space-y-1">
-            <p className="text-lg font-semibold text-gray-800">FastFoods</p>
-            <p className="text-gray-600 italic">Thank you for your order!</p>
-            <p className="text-gray-500 font-mono">ORDER# {orderNumber}</p>
-          </div>
         </div>
 
-        <form onSubmit={handleCheckout} className="text-center">
+        <form onSubmit={handleOpenModal} className="text-center">
           <button
             type="submit"
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-10 rounded-xl transition-transform transform hover:scale-105 shadow-md"
@@ -99,6 +102,62 @@ const Checkout = () => {
           </button>
         </form>
       </div>
+
+      {/* MODAL */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md">
+            <h2 className="text-2xl font-bold text-center mb-6 text-green-600">
+              Customer Details
+            </h2>
+
+            <form onSubmit={handleSubmitDetails} className="space-y-4">
+
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="w-full border rounded-lg p-3"
+              />
+
+              <input
+                type="text"
+                placeholder="Phone Number"
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
+                className="w-full border rounded-lg p-3"
+              />
+
+              <input
+                type="email"
+                placeholder="Email Address"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                className="w-full border rounded-lg p-3"
+              />
+
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg"
+                >
+                  Continue to Payment
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
