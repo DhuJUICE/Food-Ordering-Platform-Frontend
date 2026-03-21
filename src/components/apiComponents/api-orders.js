@@ -1,11 +1,5 @@
 import { API_URL } from "./api-base-url";
 
-// Helper function to get auth headers
-const getAuthHeaders = () => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-});
-
 // ##############################################################
 // ORDER MANAGEMENT - ORDER API CALLS
 
@@ -31,7 +25,7 @@ export const fetchUserOrders = async () => {
 export const fetchAllOrders = async () => {
   try {
     const response = await fetch(`${API_URL}/api/orders/all`, {
-      headers: getAuthHeaders(),
+      headers: {"Content-Type": "application/json"},
 	  credentials: "include", // ⚡ ensures session cookie is sent
     });
 
@@ -49,7 +43,7 @@ export const updateOrderStatus = async (orderId, newStatus, collected = false) =
   try {
     const response = await fetch(`${API_URL}/api/orders/${orderId}/status`, {
       method: "PUT",
-      headers: getAuthHeaders(),
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ status: newStatus, collected }),
 	  credentials: "include", // ⚡ ensures session cookie is sent
     });

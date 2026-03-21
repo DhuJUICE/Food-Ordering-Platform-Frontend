@@ -7,15 +7,15 @@ const PaymentFailure = ({ orderNumber, total }) => {
   const navigate = useNavigate();
   const { setCart } = useCart(); // context setter for immediate UI update
 
-  // ✅ Function to handle cancel order
+  // Function to handle cancel order
   const handleCancelOrder = async () => {
-    // 1️⃣ Clear cart immediately in context (updates header badge & cart page)
+    // Clear cart immediately in context (updates header badge & cart page)
     setCart([]);
 
-    // 2️⃣ Redirect user immediately to menu/home
+    // Redirect user immediately to menu/home
     navigate("/");
 
-    // 3️⃣ Clear backend cart in background
+    // Clear backend cart in background
     try {
       await clearCartAPI();
     } catch (err) {

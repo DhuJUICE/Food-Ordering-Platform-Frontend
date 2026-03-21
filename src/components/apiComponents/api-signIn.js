@@ -1,27 +1,22 @@
 import { API_URL } from "./api-base-url";
-import { setAccessToken, setRefreshToken } from '../userManagementComponents/tokenManagement/tokenManager';
-import {jwtDecode} from 'jwt-decode'; // decode JWT
 
+// Since JWT is now HttpOnly, we no longer save it manually
+// You just store userId from backend response
 export const signIn = async (userName, userPassword) => {
   try {
-    const response = await fetch(`${API_URL}/api/token`, {
+    const response = await fetch(`${API_URL}/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: userName, password: userPassword }),
+	  body: JSON.stringify({ username: userName, password: userPassword }),
+	  credentials: "include"
     });
 
     const data = await response.json();
 
-    if (data.access) {
-      // Save tokens
-      setAccessToken(data.access);
-      setRefreshToken(data.refresh);
-
-      // Decode JWT to get user ID
-      const decoded = jwtDecode(data.access);
-      const userId = decoded.user_id; // SimpleJWT uses "user_id" by default
-      localStorage.setItem('userId', userId); // store it for later
-	  console.log(localStorage.getItem('userId', userId));
+    if (data.message === "Login successful" && data.user_id) {
+      // Save userId in localStorage for frontend usage
+      localStorage.setItem('userId', data.user_id);
+      console.log("Logged in userId:", localStorage.getItem('userId'));
 
       return { success: true };
     } else {

@@ -9,10 +9,8 @@ export const fetchCartItems = async () => {
   try {
     const response = await fetch(`${API_URL}/api/cart`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // ⚡ ensures session cookie is sent
+      headers: {"Content-Type": "application/json"},
+      credentials: "include", 
     });
 
     if (!response.ok) {
@@ -57,9 +55,7 @@ export const updateCartAPI = async ({ action, product, quantity }) => {
 
     const response = await fetch(`${API_URL}/api/cart`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify(body),
       credentials: "include",
     });
@@ -102,9 +98,7 @@ export const clearCartAPI = async () => {
   try {
     const response = await fetch(`${API_URL}/api/cart`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ action: "clear", productId: "0" }), // dummy productId
       credentials: "include",
     });

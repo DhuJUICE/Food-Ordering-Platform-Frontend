@@ -6,9 +6,7 @@ export const processPayment = async (totalPrice, orderNumber, deliveryMethod, cu
 
     const response = await fetch(`${API_URL}/api/checkout`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         totalPurchaseTotal: totalPrice.toFixed(2),
         orderNumber: orderNumber,

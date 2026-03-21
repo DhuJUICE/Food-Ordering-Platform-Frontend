@@ -13,6 +13,7 @@ export const registerUser = async (firstName, lastName, email, password, confirm
         password: password,
         confirm_password: confirmPassword,
       }),
+	  credentials: "include"
     });
 
     const data = await response.json();
