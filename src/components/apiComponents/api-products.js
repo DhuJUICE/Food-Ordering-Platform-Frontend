@@ -26,7 +26,7 @@ export const fetchProducts = async (productId = null) => {
     const url = productId ? `${API_URL}/api/product/${productId}` : `${API_URL}/api/product`;
     const response = await fetch(url, {
       headers: { "Content-Type": "application/json" },
-	  credentials: "include"
+	    credentials: "include"
     });
     if (!response.ok) throw new Error("Failed to fetch products");
     return await response.json();
@@ -43,7 +43,7 @@ export const createProduct = async (productData) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(productData),
-	  credentials: "include"
+	    credentials: "include"
     });
     if (!response.ok) throw new Error("Failed to create product");
     return await response.json();

@@ -12,7 +12,7 @@ const TrackOrderPage = () => {
 
   const loadOrders = async () => {
     if (!phone) {
-      setError("No phone number found. Cannot track orders.");
+      setError("You have not placed an order yet.");
       setLoading(false);
       return;
     }

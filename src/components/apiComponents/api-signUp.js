@@ -1,7 +1,7 @@
 // api-signUp.js
 import { API_URL } from "./api-base-url";
 
-export const registerUser = async (firstName, lastName, email, password, confirmPassword) => {
+export const registerUser = async (firstName, lastName, email, cellphone, password, confirmPassword) => {
   try {
     const response = await fetch(`${API_URL}/api/register`, {
       method: 'POST',
@@ -10,6 +10,7 @@ export const registerUser = async (firstName, lastName, email, password, confirm
         first_name: firstName,
         last_name: lastName,
         email: email,
+        cellphone: cellphone,
         password: password,
         confirm_password: confirmPassword,
       }),

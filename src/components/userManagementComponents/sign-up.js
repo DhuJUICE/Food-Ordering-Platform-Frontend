@@ -14,6 +14,7 @@ const Sign_Up = () => {
     const firstName = document.getElementById("firstname").value;
     const lastName = document.getElementById("lastname").value;
     const email = document.getElementById("email").value;
+    const cellphone = document.getElementById("cellphone").value;
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirm-password").value;
 
@@ -23,7 +24,7 @@ const Sign_Up = () => {
     }
 
     try {
-      const data = await registerUser(firstName, lastName, email, password, confirmPassword);
+      const data = await registerUser(firstName, lastName, email, cellphone, password, confirmPassword);
       console.log(data);
       alert("Registration successful!");
       navigate('/sign-in');
@@ -69,7 +70,19 @@ const Sign_Up = () => {
             <input
               type="email"
               id="email"
-              placeholder="Enter your email"
+              placeholder="Email"
+              required
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400"
+            />
+          </div>
+
+          {/* Cellphone */}
+          <div className="flex flex-col">
+            <label htmlFor="email" className="mb-1 text-gray-700 font-medium">Cellphone:</label>
+            <input
+              type="number"
+              id="cellphone"
+              placeholder="Cellphone"
               required
               className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400"
             />
