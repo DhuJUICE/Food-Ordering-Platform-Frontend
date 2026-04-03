@@ -1,13 +1,19 @@
 // api/product-api.js
 import { API_URL } from "./api-base-url";
 
+const path = window.location.pathname;
+// "/pizzaworld/menu"
+
+const slug = path.split('/')[1];
+// "pizzaworld"
+
 //##############################################################
 // PRODUCT MENU - PRODUCT API CALLS
 
 // FETCH / GET all products (no auth needed)
 export const fetchMenuProducts = async () => {
   try {
-    const response = await fetch(`${API_URL}/api/menu`, {
+    const response = await fetch(`${API_URL}/${slug}/api/menu`, {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
