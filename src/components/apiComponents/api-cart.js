@@ -21,7 +21,7 @@ export const fetchCartItems = async () => {
     const result = await response.json();
     if (!result.success || !result.cart) return [];
 
-    const cartItems = result.cart;
+    const cartItems = result.cartItems;
 
     // Map backend items to frontend-friendly format
     return Object.values(cartItems).map(item => ({
@@ -42,20 +42,28 @@ export const fetchCartItems = async () => {
  * Unified function to update the cart.
  * Handles add, remove, increment, decrement, clear.
  */
-export const updateCartAPI = async ({ action, product, quantity }) => {
+export const updateCartAPI = async ({ action, product = null, quantity }) => {
   try {
-    const body = { action, productId: String(product.id) };
+    const body = { action };
 
-    if (action === "add") {
-      body.quantity = quantity || 1;
-      body.prodName = product.prodName;
-      body.prodPrice = product.prodPrice;
-      body.prodImagePath = product.prodImagePath;
+    if (action === "clear") {
+      body.productId = "0"; // dummy product ID for clearing
+    } else if (product) {
+      body.productId = String(product.id);
+
+      if (action === "add") {
+        body.quantity = quantity || 1;
+        body.prodName = product.prodName;
+        body.prodPrice = product.prodPrice;
+        body.prodImagePath = product.prodImagePath;
+      }
+    } else {
+      return { success: false, message: "Product required for this action" };
     }
 
     const response = await fetch(`${API_URL}/api/cart`, {
       method: "PUT",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
       credentials: "include",
     });
@@ -64,7 +72,6 @@ export const updateCartAPI = async ({ action, product, quantity }) => {
     return response.ok
       ? result
       : { success: false, message: result.message || "Cart update failed" };
-
   } catch (error) {
     console.error("Cart update error:", error);
     return { success: false, message: "An error occurred while updating cart" };
@@ -95,20 +102,5 @@ export const removeItemFromCartAPI = async (product) => {
 
 /** Clear all items from cart */
 export const clearCartAPI = async () => {
-  try {
-    const response = await fetch(`${API_URL}/api/cart`, {
-      method: "PUT",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ action: "clear", productId: "0" }), // dummy productId
-      credentials: "include",
-    });
-
-    const result = await response.json();
-    return response.ok
-      ? result
-      : { success: false, message: result.message || "Failed to clear cart" };
-  } catch (error) {
-    console.error("Clear cart error:", error);
-    return { success: false, message: "An error occurred while clearing cart" };
-  }
+  return updateCartAPI({ action: "clear"});
 };

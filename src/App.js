@@ -2,6 +2,7 @@ import React from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { CartProvider } from "./components/pageComponents/CartPage/cart-context";
 import { ProductProvider } from "./components/pageComponents/MenuPage/product-context";
+import { AuthProvider } from './components/userManagementComponents/auth-context';
 
 import Header from './components/sectionComponents/header';
 import Footer from './components/sectionComponents/footer';
@@ -23,7 +24,8 @@ import TrackOrders from "./components/pageComponents/TrackOrderPage/TrackOrderPa
 
 function App() {
   return (
-    <CartProvider>
+  <AuthProvider>
+  <CartProvider>
 	<ProductProvider>
       <Router>
         
@@ -54,7 +56,8 @@ function App() {
         </div>
       </Router>
 	</ProductProvider>
-    </CartProvider>
+  </CartProvider>
+  </AuthProvider>
   );
 }
 

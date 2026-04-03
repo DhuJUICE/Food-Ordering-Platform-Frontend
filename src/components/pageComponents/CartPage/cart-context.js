@@ -57,7 +57,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const clearCart = async () => {
-    const result = await updateCartAPI({ action: "clear", product: { id: "0" } });
+    const result = await updateCartAPI({ action: "clear"});
     if (result.success) setCart([]);
     return result;
   };

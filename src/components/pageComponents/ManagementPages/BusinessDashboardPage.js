@@ -13,7 +13,7 @@ const BusinessDashboardPage = () => {
 
   useEffect(() => {
     loadOrders();
-    const interval = setInterval(loadOrders, 5000); // refresh every 5s
+    const interval = setInterval(loadOrders, 10000);
     return () => clearInterval(interval);
   }, []);
 

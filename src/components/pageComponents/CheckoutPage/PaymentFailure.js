@@ -17,7 +17,7 @@ const PaymentFailure = ({ orderNumber, total }) => {
 
     // Clear backend cart in background
     try {
-      await clearCartAPI();
+      await clearCartAPI({action: "clear"});
     } catch (err) {
       console.error("Failed to clear backend cart:", err);
     }

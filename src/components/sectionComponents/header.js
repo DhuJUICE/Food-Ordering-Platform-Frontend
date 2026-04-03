@@ -1,34 +1,29 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
-import { getAccessToken, removeAccessToken, removeRefreshToken } from '../userManagementComponents/tokenManagement/tokenManager';
 import { useCart } from '../pageComponents/CartPage/cart-context';
+import { useAuth } from '../userManagementComponents/auth-context';
+import { logout } from '../apiComponents/api-signIn';
 
 const Header = () => {
   const navigate = useNavigate();
   const { totalQuantity, setCart } = useCart();
-  const isLoggedIn = !!getAccessToken();
+  const { isLoggedIn, refreshAuth } = useAuth(); // <-- use context
 
-  const handleLogout = () => {
-    removeAccessToken();
-    removeRefreshToken();
-    setCart([]); // clear cart context
-    localStorage.removeItem('cart');
+  const handleLogout = async () => {
+    await logout();
+    setCart([]);        // clear cart
+    await refreshAuth(); // refresh auth state in context
     navigate('/sign-in');
   };
 
-  const openCart = () => {
-    navigate('/cart');
-  };
+  const openCart = () => navigate('/cart');
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
-      {/* Top bar: Logo + Cart + Login/Logout */}
+      {/* Top bar */}
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
-        <div
-          className="text-2xl font-bold text-green-600 cursor-pointer"
-          onClick={() => navigate('/')}
-        >
+        <div className="text-2xl font-bold text-green-600 cursor-pointer" onClick={() => navigate('/')}>
           FastFoods
         </div>
 
@@ -49,7 +44,7 @@ const Header = () => {
             )}
           </div>
 
-          {/* Login/Logout */}
+          {/* Login / Logout */}
           {!isLoggedIn ? (
             <button
               onClick={() => navigate('/sign-in')}
@@ -73,41 +68,13 @@ const Header = () => {
         <ul className="container mx-auto flex justify-center space-x-4 py-3 px-6">
           {!isLoggedIn ? (
             <>
-              <li>
-                <button
-                  onClick={() => navigate('/')}
-                  className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                >
-                  Menu
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigate('/track-orders')}
-                  className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                >
-                  Track Order
-                </button>
-              </li>
+              <li><button onClick={() => navigate('/')} className="text-gray-700 hover:text-green-600 font-medium transition-colors">Menu</button></li>
+              <li><button onClick={() => navigate('/track-orders')} className="text-gray-700 hover:text-green-600 font-medium transition-colors">Track Order</button></li>
             </>
           ) : (
             <>
-              <li>
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                >
-                  Dashboard
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigate('/manage-menu')}
-                  className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                >
-                  Manage Menu
-                </button>
-              </li>
+              <li><button onClick={() => navigate('/dashboard')} className="text-gray-700 hover:text-green-600 font-medium transition-colors">Dashboard</button></li>
+              <li><button onClick={() => navigate('/manage-menu')} className="text-gray-700 hover:text-green-600 font-medium transition-colors">Manage Menu</button></li>
             </>
           )}
         </ul>

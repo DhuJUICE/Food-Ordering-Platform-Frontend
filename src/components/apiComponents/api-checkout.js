@@ -11,10 +11,10 @@ export const processPayment = async (totalPrice, orderNumber, deliveryMethod, cu
         totalPurchaseTotal: totalPrice.toFixed(2),
         orderNumber: orderNumber,
         deliveryMethod: deliveryMethod,
-		customerName: customerName,
-		customerPhone: customerPhone
+		    customerName: customerName,
+        customerPhone: customerPhone,
       }),
-	  credentials: "include", // ⚡ ensures session cookie is sent
+	    credentials: "include",
     });
 	
     const data = await response.json();

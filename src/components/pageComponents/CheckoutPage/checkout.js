@@ -63,9 +63,6 @@ const Checkout = () => {
       phone = "+27" + phone;
     }
 
-    // Save normalized phone
-    localStorage.setItem("customerPhone", phone);
-
     await processPayment(
       totalPrice,
       orderNumber,

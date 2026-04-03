@@ -6,13 +6,12 @@ import { API_URL } from "./api-base-url";
 // Fetch orders for a specific user (Track Order Page)
 export const fetchUserOrders = async () => {
   try {
-	const customerPhone = localStorage.getItem("customerPhone");
-    const response = await fetch(`${API_URL}/api/orders/track/${customerPhone}`, {
+    const response = await fetch(`${API_URL}/api/orders/track`, {
       headers: {"Content-Type": "application/json"},
-	  credentials: "include", // ⚡ ensures session cookie is sent
+	    credentials: "include",
     });
 
-    if (!response.ok) throw new Error("Failed to fetch user orders");
+    if (!response.ok) throw new Error("Failed to track orders");
 
     return await response.json();
   } catch (error) {
@@ -26,10 +25,10 @@ export const fetchAllOrders = async () => {
   try {
     const response = await fetch(`${API_URL}/api/orders/all`, {
       headers: {"Content-Type": "application/json"},
-	  credentials: "include", // ⚡ ensures session cookie is sent
+	    credentials: "include",
     });
 
-    if (!response.ok) throw new Error("Failed to fetch all orders");
+    if (!response.ok) throw new Error("Failed to fetch dashboard orders");
 
     return await response.json();
   } catch (error) {
@@ -45,7 +44,7 @@ export const updateOrderStatus = async (orderId, newStatus, collected = false) =
       method: "PUT",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ status: newStatus, collected }),
-	  credentials: "include", // ⚡ ensures session cookie is sent
+	    credentials: "include",
     });
 
     if (!response.ok) throw new Error("Failed to update order status");

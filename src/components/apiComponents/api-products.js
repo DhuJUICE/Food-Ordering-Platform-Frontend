@@ -4,15 +4,16 @@ import { API_URL } from "./api-base-url";
 //##############################################################
 // PRODUCT MENU - PRODUCT API CALLS
 
-// FETCH / GET all products or a single product (no auth needed)
-export const fetchMenuProducts = async (productId = null) => {
+// FETCH / GET all products (no auth needed)
+export const fetchMenuProducts = async () => {
   try {
-    const url = productId ? `${API_URL}/api/menu/${productId}` : `${API_URL}/api/menu`;
-    const response = await fetch(url, {
+    const response = await fetch(`${API_URL}/api/menu`, {
       headers: { "Content-Type": "application/json" },
-	  credentials: "include"
+      credentials: "include",
     });
+
     if (!response.ok) throw new Error("Failed to fetch products");
+
     return await response.json();
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -76,7 +77,7 @@ export const deleteProduct = async (productId) => {
     const response = await fetch(`${API_URL}/api/product/${productId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-	  credentials: "include"
+	    credentials: "include"
     });
     if (!response.ok) throw new Error("Failed to delete product");
     // DELETE usually returns no content, but we can return a simple message
