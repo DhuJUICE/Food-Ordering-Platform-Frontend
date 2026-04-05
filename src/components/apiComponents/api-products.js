@@ -1,19 +1,9 @@
 // api/product-api.js
 import { API_URL } from "./api-base-url";
 
-const path = window.location.pathname;
-// "/pizzaworld/menu"
-
-const slug = path.split('/')[1];
-// "pizzaworld"
-
-//##############################################################
-// PRODUCT MENU - PRODUCT API CALLS
-
-// FETCH / GET all products (no auth needed)
 export const fetchMenuProducts = async () => {
   try {
-    const response = await fetch(`${API_URL}/${slug}/api/menu`, {
+    const response = await fetch(`${API_URL}/api/menu`, {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
@@ -27,10 +17,9 @@ export const fetchMenuProducts = async () => {
   }
 };
 
-// FETCH all products or a single product (requires auth)
-export const fetchProducts = async (productId = null) => {
+export const fetchProducts = async () => {
   try {
-    const url = productId ? `${API_URL}/api/product/${productId}` : `${API_URL}/api/product`;
+    const url = `${API_URL}/api/product`;
     const response = await fetch(url, {
       headers: { "Content-Type": "application/json" },
 	    credentials: "include"
@@ -43,7 +32,6 @@ export const fetchProducts = async (productId = null) => {
   }
 };
 
-// CREATE / POST a new product (auth required)
 export const createProduct = async (productData) => {
   try {
     const response = await fetch(`${API_URL}/api/product`, {
@@ -60,10 +48,9 @@ export const createProduct = async (productData) => {
   }
 };
 
-// UPDATE / PUT an existing product (auth required)
-export const updateProduct = async (productId, updatedData) => {
+export const updateProduct = async (product_id, updatedData) => {
   try {
-    const response = await fetch(`${API_URL}/api/product/${productId}`, {
+    const response = await fetch(`${API_URL}/api/product/${product_id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedData),
@@ -77,10 +64,9 @@ export const updateProduct = async (productId, updatedData) => {
   }
 };
 
-// DELETE a product (auth required)
-export const deleteProduct = async (productId) => {
+export const deleteProduct = async (product_id) => {
   try {
-    const response = await fetch(`${API_URL}/api/product/${productId}`, {
+    const response = await fetch(`${API_URL}/api/product/${product_id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
 	    credentials: "include"

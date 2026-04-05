@@ -12,11 +12,9 @@ const MenuManagementPage = () => {
   const [editData, setEditData] = useState({});
   const [addingNew, setAddingNew] = useState(false);
   const [newProductData, setNewProductData] = useState({
-    prodName: "",
-    prodPrice: "",
-    prodDesc: "",
-    prodAvailQuant: "",
-    prodImagePath: "",
+    name: "",
+    price: "",
+    image: "",
   });
 
   const loadProducts = async () => {
@@ -38,11 +36,9 @@ const MenuManagementPage = () => {
   const handleEdit = (product) => {
     setEditingProductId(product.id);
     setEditData({
-      prodName: product.prodName,
-      prodPrice: product.prodPrice,
-      prodDesc: product.prodDesc,
-      prodAvailQuant: product.prodAvailQuant,
-      prodImagePath: product.prodImagePath,
+      name: product.name,
+      price: product.price,
+      image: product.image,
     });
   };
 
@@ -70,22 +66,19 @@ const MenuManagementPage = () => {
 
   const handleAddProduct = async () => {
     if (
-      !newProductData.prodName ||
-      !newProductData.prodPrice ||
-      !newProductData.prodDesc ||
-      !newProductData.prodAvailQuant
+      !newProductData.name ||
+      !newProductData.price
     ) {
       alert("Please fill in all required fields");
       return;
     }
+
     await createProduct(newProductData);
     setAddingNew(false);
     setNewProductData({
-      prodName: "",
-      prodPrice: "",
-      prodDesc: "",
-      prodAvailQuant: "",
-      prodImagePath: "",
+      name: "",
+      price: "",
+      image: "",
     });
     loadProducts();
   };
@@ -109,39 +102,24 @@ const MenuManagementPage = () => {
           <h2 className="text-xl font-semibold mb-4">New Product</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
-              name="prodName"
+              name="name"
               placeholder="Name"
-              value={newProductData.prodName}
+              value={newProductData.name}
               onChange={handleNewChange}
               className="border border-gray-300 rounded-md p-2"
             />
             <input
-              name="prodPrice"
+              name="price"
               type="number"
               placeholder="Price"
-              value={newProductData.prodPrice}
+              value={newProductData.price}
               onChange={handleNewChange}
               className="border border-gray-300 rounded-md p-2"
             />
             <input
-              name="prodAvailQuant"
-              type="number"
-              placeholder="Quantity"
-              value={newProductData.prodAvailQuant}
-              onChange={handleNewChange}
-              className="border border-gray-300 rounded-md p-2"
-            />
-            <input
-              name="prodDesc"
-              placeholder="Description"
-              value={newProductData.prodDesc}
-              onChange={handleNewChange}
-              className="border border-gray-300 rounded-md p-2"
-            />
-            <input
-              name="prodImagePath"
+              name="image"
               placeholder="Image URL"
-              value={newProductData.prodImagePath}
+              value={newProductData.image}
               onChange={handleNewChange}
               className="border border-gray-300 rounded-md p-2"
             />
@@ -174,8 +152,6 @@ const MenuManagementPage = () => {
                 <th className="p-3 text-left">Image</th>
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3 text-left">Price (R)</th>
-                <th className="p-3 text-left">Quantity</th>
-                <th className="p-3 text-left">Description</th>
                 <th className="p-3 text-left">Actions</th>
               </tr>
             </thead>
@@ -187,59 +163,34 @@ const MenuManagementPage = () => {
                 >
                   <td className="p-3">
                     <img
-                      src={product.prodImagePath || "https://via.placeholder.com/50"}
-                      alt={product.prodName}
+                      src={product.image || "https://via.placeholder.com/50"}
+                      alt={product.name}
                       className="w-16 h-16 object-cover rounded"
                     />
                   </td>
                   <td className="p-3">
                     {editingProductId === product.id ? (
                       <input
-                        name="prodName"
-                        value={editData.prodName}
+                        name="name"
+                        value={editData.name}
                         onChange={handleChange}
                         className="border border-gray-300 rounded-md p-1 w-full"
                       />
                     ) : (
-                      product.prodName
+                      product.name
                     )}
                   </td>
                   <td className="p-3">
                     {editingProductId === product.id ? (
                       <input
-                        name="prodPrice"
+                        name="price"
                         type="number"
-                        value={editData.prodPrice}
+                        value={editData.price}
                         onChange={handleChange}
                         className="border border-gray-300 rounded-md p-1 w-full"
                       />
                     ) : (
-                      product.prodPrice
-                    )}
-                  </td>
-                  <td className="p-3">
-                    {editingProductId === product.id ? (
-                      <input
-                        name="prodAvailQuant"
-                        type="number"
-                        value={editData.prodAvailQuant}
-                        onChange={handleChange}
-                        className="border border-gray-300 rounded-md p-1 w-full"
-                      />
-                    ) : (
-                      product.prodAvailQuant
-                    )}
-                  </td>
-                  <td className="p-3">
-                    {editingProductId === product.id ? (
-                      <input
-                        name="prodDesc"
-                        value={editData.prodDesc}
-                        onChange={handleChange}
-                        className="border border-gray-300 rounded-md p-1 w-full"
-                      />
-                    ) : (
-                      product.prodDesc
+                      product.price
                     )}
                   </td>
                   <td className="p-3 flex flex-col md:flex-row gap-2">

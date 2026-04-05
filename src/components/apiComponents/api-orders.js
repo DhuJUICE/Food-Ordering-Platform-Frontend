@@ -1,8 +1,5 @@
 import { API_URL } from "./api-base-url";
 
-// ##############################################################
-// ORDER MANAGEMENT - ORDER API CALLS
-
 // Fetch orders for a specific user (Track Order Page)
 export const fetchUserOrders = async () => {
   try {
@@ -38,12 +35,12 @@ export const fetchAllOrders = async () => {
 };
 
 // Update order status
-export const updateOrderStatus = async (orderId, newStatus, collected = false) => {
+export const updateOrderStatus = async (orderId, newStatus, is_collected = false) => {
   try {
     const response = await fetch(`${API_URL}/api/orders/${orderId}/status`, {
       method: "PUT",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ status: newStatus, collected }),
+      body: JSON.stringify({ status: newStatus, is_collected }),
 	    credentials: "include",
     });
 

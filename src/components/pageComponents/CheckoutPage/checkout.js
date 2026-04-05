@@ -5,7 +5,7 @@ import { processPayment } from "../../apiComponents/api-checkout";
 const Checkout = () => {
   const { cart } = useCart();
 
-  const [deliveryMethod, setDeliveryMethod] = useState("collect");
+
   const [showModal, setShowModal] = useState(false);
 
   const [customerName, setCustomerName] = useState("");
@@ -13,17 +13,12 @@ const Checkout = () => {
 
   const [phoneError, setPhoneError] = useState("");
 
-  const deliveryFee = 50;
-
   const subtotal = cart.reduce(
-    (sum, item) => sum + item.prodPrice * item.quantity,
+    (sum, item) => sum + item.product_price * item.quantity,
     0
   );
 
-  const totalPrice =
-    deliveryMethod === "delivery" ? subtotal + deliveryFee : subtotal;
-
-  const orderNumber = Math.floor(1000 + Math.random() * 9000);
+  const totalPrice = subtotal;
 
   const handleOpenModal = (event) => {
     event.preventDefault();
@@ -65,8 +60,6 @@ const Checkout = () => {
 
     await processPayment(
       totalPrice,
-      orderNumber,
-      deliveryMethod,
       customerName,
       phone
     );
@@ -85,10 +78,10 @@ const Checkout = () => {
             {cart.map((item) => (
               <li key={item.id} className="flex justify-between py-3">
                 <span className="text-gray-800 font-medium">
-                  {item.name} x {item.quantity}
+                  {item.product_name} x {item.quantity}
                 </span>
                 <span className="text-gray-700">
-                  R{(item.prodPrice * item.quantity).toFixed(2)}
+                  R{(item.product_price * item.quantity).toFixed(2)}
                 </span>
               </li>
             ))}
@@ -98,13 +91,6 @@ const Checkout = () => {
             <span>Subtotal:</span>
             <span>R{subtotal.toFixed(2)}</span>
           </div>
-
-          {deliveryMethod === "delivery" && (
-            <div className="flex justify-between text-gray-700 mb-2">
-              <span>Delivery Fee:</span>
-              <span>R{deliveryFee}</span>
-            </div>
-          )}
 
           <div className="flex justify-between font-bold text-green-600 text-xl mb-4 border-t border-gray-200 pt-2">
             <span>Total:</span>

@@ -1,56 +1,36 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaMinus, FaTrash } from 'react-icons/fa';
-import { useCart } from "./cart-context"; 
-import { incrementCartItemAPI, decrementCartItemAPI, removeItemFromCartAPI } from '../../apiComponents/api-cart';
+import { useCart } from "./cart-context";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { cart, setCart } = useCart();
+  const { cart, incrementItem, decrementItem, removeItem } = useCart();
   const [loadingItems, setLoadingItems] = useState(false);
 
-  // Pass full product object to API calls
-  const incrementCartItem = async (item) => {
+  const handleIncrement = async (cart_item) => {
     setLoadingItems(true);
-    const result = await incrementCartItemAPI(item);
-    if (!result.success) return alert(result.message);
-
-    const updatedCart = cart.map(c =>
-      c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c
-    );
-    setCart(updatedCart);
+    const result = await incrementItem(cart_item);
+    if (!result.success) alert(result.message);
     setLoadingItems(false);
   };
 
-  const decrementCartItem = async (item) => {
-	// Skip if quantity is already 1
-	if (item.quantity <= 1) return;
-  
-	setLoadingItems(true);
-	const result = await decrementCartItemAPI(item);
-	if (!result.success) {
-	  setLoadingItems(false);
-	  return alert(result.message);
-	}
-  
-	const updatedCart = cart.map(c =>
-	  c.id === item.id ? { ...c, quantity: c.quantity - 1 } : c
-	);
-	setCart(updatedCart);
-	setLoadingItems(false);
-  };
-
-  const removeItemFromCart = async (item) => {
+  const handleDecrement = async (cart_item) => {
+    if (cart_item.quantity <= 1) return; // Skip if quantity is 1
     setLoadingItems(true);
-    const result = await removeItemFromCartAPI(item);
-    if (!result.success) return alert(result.message);
-
-    const updatedCart = cart.filter(c => c.id !== item.id);
-    setCart(updatedCart);
+    const result = await decrementItem(cart_item);
+    if (!result.success) alert(result.message);
     setLoadingItems(false);
   };
 
-  const subtotal = cart.reduce((sum, item) => sum + item.prodPrice * item.quantity, 0);
+  const handleRemove = async (cart_item) => {
+    setLoadingItems(true);
+    const result = await removeItem(cart_item);
+    if (!result.success) alert(result.message);
+    setLoadingItems(false);
+  };
+
+  const subtotal = cart.reduce((sum, cart_item) => sum + cart_item.product_price * cart_item.quantity, 0);
 
   const goToCheckout = () => {
     if (cart.length === 0) return alert("Your cart is empty!");
@@ -63,26 +43,42 @@ const Cart = () => {
         <h2 className="text-2xl font-bold text-green-600 mb-6 text-center">My Order</h2>
 
         {cart.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">Your have not placed an order yet</p>
+          <p className="text-gray-500 text-center py-8">You have not placed an order yet</p>
         ) : (
           <div className="grid gap-6">
-            {cart.map(item => (
-              <div key={item.id} className="flex flex-col sm:flex-row items-center sm:items-start bg-gray-50 rounded-lg shadow p-4">
-                <img src={item.image} alt={item.name} className="w-32 h-32 object-cover rounded-lg mb-4 sm:mb-0 sm:mr-6"/>
+            {cart.map(cart_item => (
+              <div key={cart_item.id} className="flex flex-col sm:flex-row items-center sm:items-start bg-gray-50 rounded-lg shadow p-4">
+                <img 
+                  src={cart_item.product_image || '/default-image.jpg'} 
+                  alt={cart_item.product_name} 
+                  className="w-32 h-32 object-cover rounded-lg mb-4 sm:mb-0 sm:mr-6"
+                />
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
-                  <p className="text-green-600 font-bold mt-1">R {item.prodPrice}</p>
-                  <p className="text-gray-700 mt-2">Quantity: {item.quantity}</p>
-                  <p className="text-gray-800 font-medium mt-1">Total: R {(item.prodPrice * item.quantity).toFixed(2)}</p>
+                  <h3 className="text-lg font-semibold text-gray-800">{cart_item.product_name}</h3>
+                  <p className="text-green-600 font-bold mt-1">R {cart_item.product_price}</p>
+                  <p className="text-gray-700 mt-2">Quantity: {cart_item.quantity}</p>
+                  <p className="text-gray-800 font-medium mt-1">Total: R {(cart_item.product_price * cart_item.quantity).toFixed(2)}</p>
                 </div>
                 <div className="flex flex-col items-center space-y-2 mt-4 sm:mt-0">
-                  <button onClick={() => incrementCartItem(item)} className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-lg w-10 h-10">
+                  <button 
+                    onClick={() => handleIncrement(cart_item)} 
+                    disabled={loadingItems}
+                    className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-lg w-10 h-10"
+                  >
                     <FaPlus />
                   </button>
-                  <button onClick={() => decrementCartItem(item)} className="flex items-center justify-center bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg w-10 h-10">
+                  <button 
+                    onClick={() => handleDecrement(cart_item)} 
+                    disabled={loadingItems}
+                    className="flex items-center justify-center bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg w-10 h-10"
+                  >
                     <FaMinus />
                   </button>
-                  <button onClick={() => removeItemFromCart(item)} className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-lg w-10 h-10">
+                  <button 
+                    onClick={() => handleRemove(cart_item)} 
+                    disabled={loadingItems}
+                    className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-lg w-10 h-10"
+                  >
                     <FaTrash />
                   </button>
                 </div>
@@ -96,7 +92,10 @@ const Cart = () => {
             <p className="text-lg font-semibold text-gray-800">
               Subtotal: <span className="text-green-600">R {subtotal.toFixed(2)}</span>
             </p>
-            <button onClick={goToCheckout} className="mt-4 sm:mt-0 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg">
+            <button 
+              onClick={goToCheckout} 
+              className="mt-4 sm:mt-0 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg"
+            >
               Confirm Order
             </button>
           </div>

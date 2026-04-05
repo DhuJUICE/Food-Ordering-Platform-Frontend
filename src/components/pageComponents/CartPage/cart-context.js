@@ -1,25 +1,36 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
-import { fetchCartItems, updateCartAPI } from "../../apiComponents/api-cart";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
+
+import {
+  fetchCartItems,
+  addToCart,
+  incrementCartItemAPI,
+  decrementCartItemAPI,
+  removeItemFromCartAPI,
+  clearCartAPI,
+} from "../../apiComponents/api-cart";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCartState] = useState(() => {
-    const saved = localStorage.getItem("cart");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [cart, setCartState] = useState([]); // ✅ no localStorage (backend is truth)
   const [loading, setLoading] = useState(false);
 
   const setCart = (items) => {
-    setCartState(items);
-    localStorage.setItem("cart", JSON.stringify(items));
+    setCartState(items || []);
   };
 
+  // ✅ Load cart from backend (single source of truth)
   const loadCart = useCallback(async () => {
     setLoading(true);
     try {
       const items = await fetchCartItems();
-      setCart(Object.values(items || {}));
+      setCart(items);
     } catch (err) {
       console.error("Error fetching cart:", err);
       setCart([]);
@@ -28,41 +39,65 @@ export const CartProvider = ({ children }) => {
     }
   }, []);
 
+  // ✅ Load cart on app start
   useEffect(() => {
     loadCart();
   }, [loadCart]);
 
-  const addToCart = async (product, quantity = 1) => {
-    const result = await updateCartAPI({ action: "add", product, quantity });
-    if (result.success) setCart(Object.values(result.cart));
+  // ================= ACTIONS =================
+
+  // ✅ Add product → then refetch cart
+  const addProduct = async (product, quantity = 1) => {
+    const result = await addToCart(product, quantity);
+    if (result.success) {
+      await loadCart(); // 🔥 ALWAYS sync with backend
+    }
     return result;
   };
 
+  // ✅ Increment quantity
   const incrementItem = async (product) => {
-    const result = await updateCartAPI({ action: "increment", product });
-    if (result.success) setCart(Object.values(result.cart));
+    const result = await incrementCartItemAPI(product);
+    if (result.success) {
+      await loadCart();
+    }
     return result;
   };
 
+  // ✅ Decrement quantity
   const decrementItem = async (product) => {
-    const result = await updateCartAPI({ action: "decrement", product });
-    if (result.success) setCart(Object.values(result.cart));
+    const result = await decrementCartItemAPI(product);
+    if (result.success) {
+      await loadCart();
+    }
     return result;
   };
 
+  // ✅ Remove item
   const removeItem = async (product) => {
-    const result = await updateCartAPI({ action: "remove", product });
-    if (result.success) setCart(Object.values(result.cart));
+    const result = await removeItemFromCartAPI(product);
+    if (result.success) {
+      await loadCart();
+    }
     return result;
   };
 
+  // ✅ Clear cart
   const clearCart = async () => {
-    const result = await updateCartAPI({ action: "clear"});
-    if (result.success) setCart([]);
+    const result = await clearCartAPI();
+    if (result.success) {
+      setCart([]); // or loadCart()
+    }
     return result;
   };
 
-  const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  // ================= DERIVED STATE =================
+
+  // ✅ Unique products count (for badge)
+  const totalUniqueItems = cart.length;
+
+  // ✅ Total quantity (if you ever need it)
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <CartContext.Provider
@@ -70,12 +105,13 @@ export const CartProvider = ({ children }) => {
         cart,
         setCart,
         loadCart,
-        addToCart,
+        addProduct,
         incrementItem,
         decrementItem,
         removeItem,
         clearCart,
-        totalQuantity,
+        totalUniqueItems, // 👈 use this in badge
+        totalItems,       // 👈 optional (for totals)
         loading,
       }}
     >

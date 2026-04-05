@@ -14,7 +14,7 @@ export const ProductProvider = ({ children }) => {
   // Save products to state + localStorage
   const setProductList = (items) => {
     setProducts(items);
-    localStorage.setItem("products", JSON.stringify(items));
+    //localStorage.setItem("products", JSON.stringify(items));
   };
 
   // Load from API (memoized)

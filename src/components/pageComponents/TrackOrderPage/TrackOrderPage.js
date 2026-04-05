@@ -13,8 +13,8 @@ const TrackOrderPage = () => {
     try {
       const data = await fetchUserOrders();
 
-      if (data && data.orders) {
-        setOrders(data.orders);
+      if (data && data.order_items) {
+        setOrders(data.order_items);
       } else {
         setOrders([]);
       }
@@ -43,8 +43,8 @@ const TrackOrderPage = () => {
 
   return (
     <div className="p-6 md:p-10 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">
-        <center>Track Your Orders</center>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        Track Your Orders
       </h1>
 
       {orders.length === 0 ? (
@@ -58,9 +58,10 @@ const TrackOrderPage = () => {
               key={order.order_id}
               className="bg-white shadow-lg rounded-xl p-6 border border-gray-200 hover:shadow-xl transition-shadow"
             >
+              {/* HEADER */}
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
                 <h2 className="text-xl font-semibold mb-2 md:mb-0">
-                  Order #{order.order_id}
+                  Order #{order.order_number}
                 </h2>
 
                 <div className="flex gap-2 items-center">
@@ -78,7 +79,7 @@ const TrackOrderPage = () => {
                     {order.status.toUpperCase()}
                   </span>
 
-                  {order.collected && (
+                  {order.is_collected && (
                     <span className="px-2 py-1 text-sm font-medium bg-gray-300 text-gray-700 rounded-full">
                       Collected
                     </span>
@@ -86,6 +87,7 @@ const TrackOrderPage = () => {
                 </div>
               </div>
 
+              {/* META INFO */}
               <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-10 mb-4 text-gray-700 text-sm">
                 <div className="flex items-center gap-1">
                   <FaCreditCard className="text-gray-500" />
@@ -102,33 +104,39 @@ const TrackOrderPage = () => {
                 )}
               </div>
 
+              {/* ITEMS */}
               <h3 className="font-semibold mb-3 text-gray-800">Items:</h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {Object.entries(order.items).map(([prodId, prodObj]) => (
+                {order.items.map((item, index) => (
                   <div
-                    key={prodId}
+                    key={index}
                     className="flex items-center gap-3 border border-gray-100 rounded-lg p-3 hover:shadow-md transition-shadow"
                   >
                     <img
                       src={
-                        prodObj.prodImagePath ||
+                        item.product.image ||
                         "https://via.placeholder.com/50"
                       }
-                      alt={prodObj.prodName}
+                      alt={item.product.name}
                       className="w-14 h-14 object-cover rounded"
                     />
 
                     <div className="flex flex-col text-sm">
                       <span className="font-medium text-gray-800">
-                        {prodObj.prodName}
+                        {item.product.name}
                       </span>
                       <span>
-                        x {prodObj.quantity} - R{prodObj.prodPrice}
+                        x {item.quantity} - R{item.price_at_purchase}
                       </span>
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* TOTAL */}
+              <div className="mt-4 text-right font-semibold text-gray-800">
+                Total: R{order.total_amount}
               </div>
             </div>
           ))}

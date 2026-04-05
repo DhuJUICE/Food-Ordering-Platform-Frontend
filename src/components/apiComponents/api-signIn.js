@@ -1,7 +1,5 @@
 import { API_URL } from "./api-base-url";
 
-// Since JWT is now HttpOnly, we no longer save it manually
-// You just store userId from backend response
 export const signIn = async (userName, userPassword) => {
   try {
     const response = await fetch(`${API_URL}/api/login`, {
@@ -22,7 +20,6 @@ export const signIn = async (userName, userPassword) => {
     return { success: false, message: 'Something went wrong. Please try again.' };
   }
 };
-
 
 export const checkAuth = async () => {
   try {

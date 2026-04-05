@@ -1,7 +1,7 @@
 // api-checkout.js
 import { API_URL } from "./api-base-url";
 
-export const processPayment = async (totalPrice, orderNumber, deliveryMethod, customerName, customerPhone) => {
+export const processPayment = async (totalPrice, customerName, customerPhone) => {
   try {
 
     const response = await fetch(`${API_URL}/api/checkout`, {
@@ -9,8 +9,6 @@ export const processPayment = async (totalPrice, orderNumber, deliveryMethod, cu
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         totalPurchaseTotal: totalPrice.toFixed(2),
-        orderNumber: orderNumber,
-        deliveryMethod: deliveryMethod,
 		    customerName: customerName,
         customerPhone: customerPhone,
       }),

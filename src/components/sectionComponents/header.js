@@ -7,7 +7,7 @@ import { logout } from '../apiComponents/api-signIn';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { totalQuantity, setCart } = useCart();
+  const { totalUniqueItems, setCart } = useCart();
   const { isLoggedIn, refreshAuth } = useAuth(); // <-- use context
 
   const handleLogout = async () => {
@@ -37,9 +37,9 @@ const Header = () => {
               <FaShoppingCart />
               <span>Your Order</span>
             </button>
-            {totalQuantity > 0 && (
+            {totalUniqueItems > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                {totalQuantity}
+                {totalUniqueItems}
               </span>
             )}
           </div>
