@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useShop } from "./ShopContext";
 
@@ -6,11 +7,18 @@ const LandingPage = () => {
   const { setShop } = useShop();
   const shops = ["platsak", "pizzaworld", "burgerhub"];
 
+  useEffect(() => {
+  	setShop(null); // 🔥 reset shop on landing page
+	
+  }, []);
+
   const goToShop = (selectedShop) => {
     setShop(selectedShop); // stored globally/localStorage
     navigate("/menu");     // navigate to menu page
-    window.location.reload();
+	
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 to-green-200 flex flex-col items-center justify-center p-6">

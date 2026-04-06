@@ -25,13 +25,14 @@ export const CartProvider = ({ children }) => {
   const [cart, setCartState] = useState([]); // ✅ no localStorage (backend is truth)
   const [loading, setLoading] = useState(false);
 
+  const [loadedShop, setLoadedShop] = useState(null);
+
   const setCart = (items) => {
     setCartState(items || []);
   };
 
   // ✅ Load cart from backend (single source of truth)
-  const loadCart = useCallback(async () => {
-    if (!shop) return; // don't fetch if no shop selected yet
+  const loadCart = useCallback(async (shop) => {
     setLoading(true);
     try {
       const items = await fetchCartItems(shop);
@@ -42,12 +43,16 @@ export const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [shop]); // ✅ depend on shop
+  }, []);
 
   // ✅ Load cart on app start
   useEffect(() => {
-    loadCart();
-  }, [loadCart]);
+	if (!shop) return;
+	if (loadedShop === shop) return;
+
+	loadCart(shop);
+	setLoadedShop(shop);
+  }, [shop, loadedShop, loadCart]);
 
   // ================= ACTIONS =================
 
@@ -55,7 +60,7 @@ export const CartProvider = ({ children }) => {
   const addProduct = async (product, quantity = 1) => {
     const result = await addToCart(product, quantity);
     if (result.success) {
-      await loadCart(); // 🔥 ALWAYS sync with backend
+      await loadCart(shop); // 🔥 ALWAYS sync with backend
     }
     return result;
   };
@@ -64,7 +69,7 @@ export const CartProvider = ({ children }) => {
   const incrementItem = async (product) => {
     const result = await incrementCartItemAPI(product);
     if (result.success) {
-      await loadCart();
+      await loadCart(shop);
     }
     return result;
   };
@@ -73,7 +78,7 @@ export const CartProvider = ({ children }) => {
   const decrementItem = async (product) => {
     const result = await decrementCartItemAPI(product);
     if (result.success) {
-      await loadCart();
+      await loadCart(shop);
     }
     return result;
   };
@@ -82,7 +87,7 @@ export const CartProvider = ({ children }) => {
   const removeItem = async (product) => {
     const result = await removeItemFromCartAPI(product);
     if (result.success) {
-      await loadCart();
+      await loadCart(shop);
     }
     return result;
   };
