@@ -15,9 +15,13 @@ import {
   clearCartAPI,
 } from "../../apiComponents/api-cart";
 
+import { useShop } from "../LandingPage/ShopContext";
+
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const { shop } = useShop();
+
   const [cart, setCartState] = useState([]); // ✅ no localStorage (backend is truth)
   const [loading, setLoading] = useState(false);
 
@@ -27,9 +31,10 @@ export const CartProvider = ({ children }) => {
 
   // ✅ Load cart from backend (single source of truth)
   const loadCart = useCallback(async () => {
+    if (!shop) return; // don't fetch if no shop selected yet
     setLoading(true);
     try {
-      const items = await fetchCartItems();
+      const items = await fetchCartItems(shop);
       setCart(items);
     } catch (err) {
       console.error("Error fetching cart:", err);
@@ -37,7 +42,7 @@ export const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [shop]); // ✅ depend on shop
 
   // ✅ Load cart on app start
   useEffect(() => {

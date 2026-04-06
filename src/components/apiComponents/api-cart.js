@@ -1,39 +1,42 @@
 // api-cart.js
 import { API_URL } from "./api-base-url";
 
-const path = window.location.pathname;
-// "/pizzaworld/menu"
-
-const slug = path.split('/')[1];
-// "pizzaworld"
-
-
 /**
  * Fetch all cart items from the backend.
  * Uses session-based cart, no token required.
  */
-export const fetchCartItems = async () => {
+export const fetchCartItems = async (shop) => {
   try {
-    // Only include slug in URL if provided
-    const url = slug ? `${API_URL}/${slug}/api/cart` : `${API_URL}/api/cart`;
+    const url = shop ? `${API_URL}/${shop}/api/cart` : `${API_URL}/api/cart`;
 
     const response = await fetch(url, {
       method: "GET",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
 
+    // Always try to parse JSON
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      result = null;
+    }
+
     if (!response.ok) {
-      const text = await response.text();
-      console.error("Backend error:", text);
-      alert("Failed to fetch cart.");
+      // Show backend message even for 404
+      const msg = result?.message || result?.error || "Failed to fetch cart.";
+      alert(msg); // or handle in UI instead of alert
       return [];
     }
 
-    const result = await response.json();
-    if (!result.success) return [];
+    if (!result.success) {
+      const msg = result?.message || result?.error || "Failed to fetch cart.";
+      alert(msg);
+      return [];
+    }
 
-    return result.cartItems.map(item => ({
+    return result.cartItems.map((item) => ({
       id: item.id,
       product_id: item.product.id,
       product_name: item.product.name,
@@ -43,6 +46,7 @@ export const fetchCartItems = async () => {
     }));
   } catch (error) {
     console.error("Error fetching cart:", error);
+    alert("An unexpected error occurred while fetching the cart.");
     return [];
   }
 };
@@ -85,7 +89,7 @@ export const removeItemFromCartAPI = async (cart_item) => {
   try {
     const productId = cart_item.product_id;
 
-    const response = await fetch(`${API_URL}/${slug}/api/cart/${productId}`, {
+    const response = await fetch(`${API_URL}/api/cart/${productId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

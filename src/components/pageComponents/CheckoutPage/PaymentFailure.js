@@ -13,7 +13,7 @@ const PaymentFailure = ({ orderNumber, total }) => {
     setCart([]);
 
     // Redirect user immediately to menu/home
-    navigate("/");
+    navigate("/menu");
 
     // Clear backend cart in background
     try {

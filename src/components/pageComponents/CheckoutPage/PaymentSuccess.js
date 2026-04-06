@@ -27,7 +27,7 @@ const PaymentSuccess = ({ orderNumber, total }) => {
         {/* Call-to-Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/menu")}
             className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
           >
             Place another order

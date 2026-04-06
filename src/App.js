@@ -22,41 +22,47 @@ import PaymentSuccessPage from "./components/pageComponents/CheckoutPage/Payment
 import PaymentFailurePage from "./components/pageComponents/CheckoutPage/PaymentFailure";
 import TrackOrders from "./components/pageComponents/TrackOrderPage/TrackOrderPage";
 
+import LandingPage from "./components/pageComponents/LandingPage/LandingPage";
+import { ShopProvider } from "./components/pageComponents/LandingPage/ShopContext";
+
 function App() {
   return (
   <AuthProvider>
-  <CartProvider>
-	<ProductProvider>
-      <Router>
-        
-        <div className="App">
-          <div className="header">
-            <Header />
-          </div>
+    <ShopProvider>
+      <CartProvider>
+        <ProductProvider>
+            <Router>
+              <div className="App">
+                <div className="header">
+                  <Header />
+                </div>
 
-          <div className="body">
-            <Routes>
-              <Route path="/" element={<Menu />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/success" element={<PaymentSuccessPage />} />
-              <Route path="/failure" element={<PaymentFailurePage />} />
-              <Route path="/sign-in" element={<Sign_In />} />
-              <Route path="/sign-up" element={<Sign_Up />} />
-              <Route path="/track-orders" element={<TrackOrders />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/manage-menu" element={<ManageMenu />} />
-            </Routes>
-          </div>
+                <div className="body">
+                  <Routes>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/success" element={<PaymentSuccessPage />} />
+                    <Route path="/failure" element={<PaymentFailurePage />} />
+                    <Route path="/sign-in" element={<Sign_In />} />
+                    <Route path="/sign-up" element={<Sign_Up />} />
+                    <Route path="/track-orders" element={<TrackOrders />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/manage-menu" element={<ManageMenu />} />
+                  </Routes>
+                </div>
 
-          <div className="footer">
-            <Footer />
-          </div>
-		  <ScrollToTop />
-        </div>
-      </Router>
-	</ProductProvider>
-  </CartProvider>
+                <div className="footer">
+                  <Footer />
+                </div>
+
+                <ScrollToTop />
+              </div>
+            </Router>
+        </ProductProvider>
+      </CartProvider>
+    </ShopProvider>
   </AuthProvider>
   );
 }
