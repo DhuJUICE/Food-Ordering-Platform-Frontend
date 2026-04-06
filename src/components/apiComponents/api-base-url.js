@@ -1,6 +1,6 @@
 let API_URL;
 
-const IN_PRODUCTION = true;
+const IN_PRODUCTION = false;
 
 if (IN_PRODUCTION === true) {
   API_URL = 'https://heranbites-backend.onrender.com';
