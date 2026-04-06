@@ -30,7 +30,6 @@ function App() {
   <AuthProvider>
     <ShopProvider>
       <CartProvider>
-        <ProductProvider>
             <Router>
               <div className="App">
                 <div className="header">
@@ -40,7 +39,11 @@ function App() {
                 <div className="body">
                   <Routes>
                     <Route path="/" element={<LandingPage />} />
-                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/menu" element={
+						<ProductProvider>
+							<Menu />
+						</ProductProvider>
+					} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/success" element={<PaymentSuccessPage />} />
@@ -60,7 +63,7 @@ function App() {
                 <ScrollToTop />
               </div>
             </Router>
-        </ProductProvider>
+
       </CartProvider>
     </ShopProvider>
   </AuthProvider>

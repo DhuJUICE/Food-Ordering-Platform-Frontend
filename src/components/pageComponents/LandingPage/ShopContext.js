@@ -9,8 +9,12 @@ export const ShopProvider = ({ children }) => {
   });
 
   const setShop = (value) => {
-    setShopState(value);
-    localStorage.setItem("shop", value); // persist
+	setShopState(value);
+	if (value) {
+		localStorage.setItem("shop", value);
+	} else {
+		localStorage.removeItem("shop");
+	}
   };
 
   return (
