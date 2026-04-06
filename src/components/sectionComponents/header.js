@@ -68,7 +68,7 @@ const Header = () => {
         <ul className="container mx-auto flex justify-center space-x-4 py-3 px-6">
           {!isLoggedIn ? (
             <>
-              <li><button onClick={() => navigate('/')} className="text-gray-700 hover:text-green-600 font-medium transition-colors">Menu</button></li>
+              <li><button onClick={() => navigate('/menu')} className="text-gray-700 hover:text-green-600 font-medium transition-colors">Menu</button></li>
               <li><button onClick={() => navigate('/track-orders')} className="text-gray-700 hover:text-green-600 font-medium transition-colors">Track Order</button></li>
             </>
           ) : (
