@@ -1,27 +1,27 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { fetchMenuProducts } from "../../apiComponents/api-products";
+import { useShop } from "../LandingPage/ShopContext";
 
 const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
-  const [products, setProducts] = useState(() => {
-    // Initialize from localStorage if available
-    const saved = localStorage.getItem("products");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const { shop } = useShop(); // ✅ get current shop
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadedShop, setLoadedShop] = useState(null); // track which shop's products are loaded
 
-  // Save products to state + localStorage
   const setProductList = (items) => {
-    setProducts(items);
-    //localStorage.setItem("products", JSON.stringify(items));
+    setProducts(items || []);
+    // Optional: persist to localStorage if needed
+    // localStorage.setItem("products", JSON.stringify(items));
   };
 
-  // Load from API (memoized)
-  const loadProducts = useCallback(async () => {
+  // Load products from API for a specific shop
+  const loadProducts = useCallback(async (shop) => {
+    if (!shop) return; // don't fetch if no shop selected
     setLoading(true);
     try {
-      const data = await fetchMenuProducts();
+      const data = await fetchMenuProducts(shop); // pass shop to API
       setProductList(data || []);
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -31,12 +31,14 @@ export const ProductProvider = ({ children }) => {
     }
   }, []);
 
-  // Fetch on mount if products empty
+  // Fetch products whenever shop changes
   useEffect(() => {
-    if (products.length === 0) {
-      loadProducts();
-    }
-  }, [loadProducts]);
+    if (!shop) return;              // ❌ don't load if no shop selected
+    if (loadedShop === shop) return; // ✅ already loaded for this shop
+
+    loadProducts(shop);
+    setLoadedShop(shop);             // track which shop is loaded
+  }, [shop, loadedShop, loadProducts]);
 
   return (
     <ProductContext.Provider value={{ products, setProductList, loadProducts, loading }}>

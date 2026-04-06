@@ -1,9 +1,10 @@
 // api/product-api.js
 import { API_URL } from "./api-base-url";
 
-export const fetchMenuProducts = async () => {
+export const fetchMenuProducts = async (shop) => {
   try {
-    const response = await fetch(`${API_URL}/api/menu`, {
+	const url = shop ? `${API_URL}/${shop}/api/menu` : `${API_URL}/api/menu`;
+    const response = await fetch(url, {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
