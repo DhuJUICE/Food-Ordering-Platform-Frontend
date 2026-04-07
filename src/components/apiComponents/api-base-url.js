@@ -5,7 +5,7 @@ const IN_PRODUCTION = false;
 if (IN_PRODUCTION === true) {
   API_URL = 'https://heranbites-backend.onrender.com';
 } else {
-  API_URL = 'https://availability-robust-star-dancing.trycloudflare.com';
+  API_URL = 'http://localhost:8000';
 }
 
 export { API_URL };
