@@ -58,7 +58,7 @@ export const CartProvider = ({ children }) => {
 
   // ✅ Add product → then refetch cart
   const addProduct = async (shop, product, quantity = 1) => {
-	alert(shop);
+
     const result = await addToCart(shop, product, quantity);
     if (result.success) {
       await loadCart(shop); // 🔥 ALWAYS sync with backend

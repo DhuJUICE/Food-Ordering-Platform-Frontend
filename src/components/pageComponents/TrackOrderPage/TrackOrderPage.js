@@ -1,17 +1,22 @@
 import React, { useEffect, useState, useRef } from "react";
 import { fetchUserOrders } from "../../apiComponents/api-orders";
 import { FaClock, FaCreditCard } from "react-icons/fa";
+import { useShop } from "../LandingPage/ShopContext"; // ✅ ADD THIS
 
 const TrackOrderPage = () => {
+  const { shop } = useShop(); // ✅ get current shop
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const firstLoad = useRef(true);
 
-  const loadOrders = async () => {
+  const loadOrders = async (shop) => {
+    if (!shop) return; // ❌ don't fetch without shop
+
     try {
-      const data = await fetchUserOrders();
+      const data = await fetchUserOrders(shop); // ✅ pass shop
 
       if (data && data.order_items) {
         setOrders(data.order_items);
@@ -30,10 +35,16 @@ const TrackOrderPage = () => {
   };
 
   useEffect(() => {
-    loadOrders();
-    const interval = setInterval(loadOrders, 10000);
+    if (!shop) return; // ✅ wait until shop exists
+
+    loadOrders(shop);
+
+    const interval = setInterval(() => {
+      loadOrders(shop);
+    }, 10000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [shop]); // ✅ rerun when shop changes
 
   if (loading)
     return <p className="text-gray-500 text-center mt-10">Loading orders...</p>;

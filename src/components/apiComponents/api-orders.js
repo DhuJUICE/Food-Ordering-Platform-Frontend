@@ -1,9 +1,9 @@
 import { API_URL } from "./api-base-url";
 
 // Fetch orders for a specific user (Track Order Page)
-export const fetchUserOrders = async () => {
+export const fetchUserOrders = async (shop) => {
   try {
-    const response = await fetch(`${API_URL}/api/orders/track`, {
+    const response = await fetch(`${API_URL}/${shop}/api/orders/track`, {
       headers: {"Content-Type": "application/json"},
 	    credentials: "include",
     });
