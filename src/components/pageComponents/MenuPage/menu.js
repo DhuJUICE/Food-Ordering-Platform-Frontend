@@ -1,13 +1,20 @@
 import React from "react";
 import { useCart } from "../CartPage/cart-context";
 import { useProducts } from "./product-context";
+import { useShop } from "../LandingPage/ShopContext"; // ✅ import shop context
 
 const MenuPage = () => {
-  const { addProduct } = useCart(); // ✅ ONLY use context action
+  const { addProduct } = useCart();
   const { products, loading } = useProducts();
+  const { shop } = useShop(); // ✅ get current shop
 
   const handleAddToCart = async (product) => {
-    const result = await addProduct(product, 1);
+    if (!shop) {
+      alert("Please select a shop first.");
+      return;
+    }
+
+    const result = await addProduct(shop, product, 1); // ✅ pass shop explicitly
 
     if (!result.success) {
       alert(result.message || "Failed to add item.");

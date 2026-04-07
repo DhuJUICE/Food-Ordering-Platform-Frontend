@@ -57,8 +57,9 @@ export const CartProvider = ({ children }) => {
   // ================= ACTIONS =================
 
   // ✅ Add product → then refetch cart
-  const addProduct = async (product, quantity = 1) => {
-    const result = await addToCart(product, quantity);
+  const addProduct = async (shop, product, quantity = 1) => {
+	alert(shop);
+    const result = await addToCart(shop, product, quantity);
     if (result.success) {
       await loadCart(shop); // 🔥 ALWAYS sync with backend
     }
@@ -66,8 +67,8 @@ export const CartProvider = ({ children }) => {
   };
 
   // ✅ Increment quantity
-  const incrementItem = async (product) => {
-    const result = await incrementCartItemAPI(product);
+  const incrementItem = async (shop, product) => {
+    const result = await incrementCartItemAPI(shop, product);
     if (result.success) {
       await loadCart(shop);
     }
@@ -75,8 +76,8 @@ export const CartProvider = ({ children }) => {
   };
 
   // ✅ Decrement quantity
-  const decrementItem = async (product) => {
-    const result = await decrementCartItemAPI(product);
+  const decrementItem = async (shop, product) => {
+    const result = await decrementCartItemAPI(shop, product);
     if (result.success) {
       await loadCart(shop);
     }
@@ -84,8 +85,8 @@ export const CartProvider = ({ children }) => {
   };
 
   // ✅ Remove item
-  const removeItem = async (product) => {
-    const result = await removeItemFromCartAPI(product);
+  const removeItem = async (shop, product) => {
+    const result = await removeItemFromCartAPI(shop, product);
     if (result.success) {
       await loadCart(shop);
     }
@@ -93,8 +94,8 @@ export const CartProvider = ({ children }) => {
   };
 
   // ✅ Clear cart
-  const clearCart = async () => {
-    const result = await clearCartAPI();
+  const clearCart = async (shop) => {
+    const result = await clearCartAPI(shop);
     if (result.success) {
       setCart([]); // or loadCart()
     }

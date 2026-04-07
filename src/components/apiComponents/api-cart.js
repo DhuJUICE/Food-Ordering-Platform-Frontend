@@ -54,7 +54,7 @@ export const fetchCartItems = async (shop) => {
 
 //=========================================================
 /** Add product to cart */
-export const addToCart = async (product, quantity) => {
+export const addToCart = async (shop, product, quantity) => {
   
   try {
     const body = {};
@@ -65,7 +65,9 @@ export const addToCart = async (product, quantity) => {
     body.price = product.price;
     body.image = product.image;
 
-    const response = await fetch(`${API_URL}/api/cart/${body.productId}`, {
+	const url = shop ? `${API_URL}/${shop}/api/cart/${body.productId}` : `${API_URL}/api/cart/${body.productId}`;
+
+    const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -85,11 +87,12 @@ export const addToCart = async (product, quantity) => {
 
 
 /** Remove product from cart */
-export const removeItemFromCartAPI = async (cart_item) => {
+export const removeItemFromCartAPI = async (shop, cart_item) => {
   try {
     const productId = cart_item.product_id;
 
-    const response = await fetch(`${API_URL}/api/cart/${productId}`, {
+	const url = shop ? `${API_URL}/${shop}/api/cart/${productId}` : `${API_URL}/api/cart/${productId}`;
+    const response = await fetch(url, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -111,7 +114,7 @@ export const removeItemFromCartAPI = async (cart_item) => {
  * Handles increment, decrement, clear.
  */
 
-export const updateCartAPI = async ({ action, cart_item = null}) => {
+export const updateCartAPI = async (shop, { action, cart_item = null}) => {
   try {
     const body = { action };
 
@@ -123,7 +126,8 @@ export const updateCartAPI = async ({ action, cart_item = null}) => {
       return { success: false, message: "Product required for this action" };
     }
 
-    const response = await fetch(`${API_URL}/api/cart`, {
+	const url = shop ? `${API_URL}/${shop}/api/cart` : `${API_URL}/api/cart`;
+    const response = await fetch(url, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -143,16 +147,16 @@ export const updateCartAPI = async ({ action, cart_item = null}) => {
 /** ================== Usage Helpers ================== */
 
 /** Increment product quantity in cart */
-export const incrementCartItemAPI = async (cart_item) => {
-  return updateCartAPI({ action: "increment", cart_item });
+export const incrementCartItemAPI = async (shop, cart_item) => {
+  return updateCartAPI(shop, { action: "increment", cart_item });
 };
 
 /** Decrement product quantity in cart */
-export const decrementCartItemAPI = async (cart_item) => {
-  return updateCartAPI({ action: "decrement", cart_item });
+export const decrementCartItemAPI = async (shop, cart_item) => {
+  return updateCartAPI(shop, { action: "decrement", cart_item });
 };
 
 /** Clear all items from cart */
-export const clearCartAPI = async () => {
-  return updateCartAPI({ action: "clear"});
+export const clearCartAPI = async (shop) => {
+  return updateCartAPI(shop, { action: "clear"});
 };
