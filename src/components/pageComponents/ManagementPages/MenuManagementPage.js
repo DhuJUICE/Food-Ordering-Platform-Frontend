@@ -5,6 +5,7 @@ import {
   updateProduct,
   createProduct,
 } from "../../apiComponents/api-products";
+import { uploadImage } from "../../apiComponents/api-image";
 
 const MenuManagementPage = () => {
   const [products, setProducts] = useState([]);
@@ -14,8 +15,9 @@ const MenuManagementPage = () => {
   const [newProductData, setNewProductData] = useState({
     name: "",
     price: "",
-    image: "",
+    image: null, // file or uploaded URL
   });
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const loadProducts = async () => {
     const data = await fetchProducts();
@@ -64,30 +66,50 @@ const MenuManagementPage = () => {
     setNewProductData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) setNewProductData((prev) => ({ ...prev, image: file }));
+  };
+
   const handleAddProduct = async () => {
-    if (
-      !newProductData.name ||
-      !newProductData.price
-    ) {
-      alert("Please fill in all required fields");
+    if (!newProductData.name || !newProductData.price || !newProductData.image) {
+      alert("Please fill in all required fields and select an image.");
       return;
     }
 
-    await createProduct(newProductData);
-    setAddingNew(false);
-    setNewProductData({
-      name: "",
-      price: "",
-      image: "",
+    let imageUrl = newProductData.image;
+
+    if (imageUrl instanceof File) {
+      try {
+        setUploadingImage(true);
+
+        const uploadedUrl = await uploadImage(newProductData.image);
+        if (!uploadedUrl) return;
+        imageUrl = uploadedUrl;
+      } catch (err) {
+        alert("Image upload failed.");
+        console.error(err);
+        return;
+      } finally {
+        setUploadingImage(false);
+      }
+    }
+
+    await createProduct({
+      name: newProductData.name,
+      price: newProductData.price,
+      image: imageUrl,
     });
+
+    setAddingNew(false);
+    setNewProductData({ name: "", price: "", image: null });
     loadProducts();
   };
 
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6"><center>Menu Management</center></h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Menu Management</h1>
 
-      {/* Add Product Section */}
       {!addingNew && (
         <button
           onClick={() => setAddingNew(true)}
@@ -116,20 +138,31 @@ const MenuManagementPage = () => {
               onChange={handleNewChange}
               className="border border-gray-300 rounded-md p-2"
             />
-            <input
-              name="image"
-              placeholder="Image URL"
-              value={newProductData.image}
-              onChange={handleNewChange}
-              className="border border-gray-300 rounded-md p-2"
-            />
+
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">Select Image:</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="border border-gray-300 rounded-md p-2 w-full"
+              />
+              {newProductData.image instanceof File && (
+                <p className="text-sm text-gray-500 mt-1">Image ready to upload: {newProductData.image.name}</p>
+              )}
+              {typeof newProductData.image === "string" && (
+                <p className="text-sm text-gray-600 mt-1">Uploaded: {newProductData.image}</p>
+              )}
+            </div>
           </div>
+
           <div className="flex gap-4 mt-4">
             <button
               onClick={handleAddProduct}
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+              disabled={uploadingImage}
             >
-              Save
+              {uploadingImage ? "Uploading..." : "Save"}
             </button>
             <button
               onClick={() => setAddingNew(false)}
@@ -141,7 +174,6 @@ const MenuManagementPage = () => {
         </div>
       )}
 
-      {/* Products Table */}
       {products.length === 0 ? (
         <p className="text-gray-500">No products yet.</p>
       ) : (
@@ -157,10 +189,7 @@ const MenuManagementPage = () => {
             </thead>
             <tbody>
               {products.map((product) => (
-                <tr
-                  key={product.id}
-                  className="border-t border-gray-200 hover:bg-gray-50"
-                >
+                <tr key={product.id} className="border-t border-gray-200 hover:bg-gray-50">
                   <td className="p-3">
                     <img
                       src={product.image || "https://via.placeholder.com/50"}

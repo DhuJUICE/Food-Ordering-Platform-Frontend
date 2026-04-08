@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signIn } from '../apiComponents/api-signIn';
 import { FaEye } from 'react-icons/fa';
-import { useCart } from '../pageComponents/CartPage/cart-context';
 import { useAuth } from './auth-context';
 
 
 const Sign_In = () => {
   const navigate = useNavigate();
-  const { loadCart } = useCart();
   const { refreshAuth } = useAuth(); // <-- new
   const [showPassword, setShowPassword] = useState(false);
 
@@ -22,8 +20,7 @@ const Sign_In = () => {
 
     if (result.success) {
       await refreshAuth(); // update auth context
-      await loadCart();    // reload cart
-      navigate('/');
+      navigate('/dashboard');
     } else {
       alert(result.message);
     }
