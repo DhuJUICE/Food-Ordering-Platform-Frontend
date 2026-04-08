@@ -1,18 +1,18 @@
 import ImageKit from "imagekit-javascript";
 
-const IN_PRODUCTION = false
+const IN_PRODUCTION = process.env.REACT_APP_IN_PRODUCTION
 
 let authEndpoint;
 
 if (IN_PRODUCTION === true){
-  authEndpoint = "https://heranbites-backend.onrender.com/api/auth-image"
+  authEndpoint = process.env.REACT_APP_IMAGEKIT_PROD_AUTH_ENDOINT
 }else{
-  authEndpoint = "http://localhost:8000/api/auth-image"
+  authEndpoint = process.env.REACT_APP_IMAGEKIT_DEV_AUTH_ENDOINT
 }
 
 const imagekit = new ImageKit({
-  publicKey: "public_tCW7CHgWHSo+4XkVnYMOlCKMu9Q=",       // from ImageKit dashboard
-  urlEndpoint: "https://ik.imagekit.io/jugamsoft", // from ImageKit dashboard
+  publicKey: process.env.REACT_APP_IMAGEKIT_PUBLIC_KEY,
+  urlEndpoint: process.env.REACT_APP_IMAGEKIT_URL_ENDPOINT, // from ImageKit dashboard
   authenticationEndpoint: authEndpoint  // for secure uploads
 });
 
