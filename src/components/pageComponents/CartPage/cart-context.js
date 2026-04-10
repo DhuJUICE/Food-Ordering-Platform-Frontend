@@ -67,7 +67,7 @@ export const CartProvider = ({ children }) => {
   };
 
   // ✅ Increment quantity
-  const incrementItem = async (shop, product) => {
+  const incrementItem = async (product) => {
     const result = await incrementCartItemAPI(shop, product);
     if (result.success) {
       await loadCart(shop);
@@ -76,7 +76,7 @@ export const CartProvider = ({ children }) => {
   };
 
   // ✅ Decrement quantity
-  const decrementItem = async (shop, product) => {
+  const decrementItem = async (product) => {
     const result = await decrementCartItemAPI(shop, product);
     if (result.success) {
       await loadCart(shop);
@@ -85,7 +85,7 @@ export const CartProvider = ({ children }) => {
   };
 
   // ✅ Remove item
-  const removeItem = async (shop, product) => {
+  const removeItem = async (product) => {
     const result = await removeItemFromCartAPI(shop, product);
     if (result.success) {
       await loadCart(shop);
