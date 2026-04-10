@@ -4,7 +4,7 @@ const IN_PRODUCTION = process.env.REACT_APP_IN_PRODUCTION
 
 let authEndpoint;
 
-if (IN_PRODUCTION === true){
+if (IN_PRODUCTION === "true"){
   authEndpoint = process.env.REACT_APP_IMAGEKIT_PROD_AUTH_ENDOINT
 }else{
   authEndpoint = process.env.REACT_APP_IMAGEKIT_DEV_AUTH_ENDOINT
