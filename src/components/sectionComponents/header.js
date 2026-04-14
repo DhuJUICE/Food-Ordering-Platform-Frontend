@@ -29,6 +29,7 @@ const Header = () => {
 
         <div className="flex items-center space-x-4">
           {/* Cart button */}
+          {!isLoggedIn &&
           <div className="relative">
             <button
               onClick={openCart}
@@ -43,6 +44,7 @@ const Header = () => {
               </span>
             )}
           </div>
+          }
 
           {/* Login / Logout */}
           {!isLoggedIn ? (
