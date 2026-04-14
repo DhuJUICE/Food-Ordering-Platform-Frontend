@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useCart } from "../CartPage/cart-context";
+import { useShop } from "../LandingPage/ShopContext"; // ✅ ADD THIS
 import { processPayment } from "../../apiComponents/api-checkout";
 
 const Checkout = () => {
   const { cart } = useCart();
-
+  const { shop } = useShop(); // ✅ GET SHOP DIRECTLY FROM SHOP CONTEXT
 
   const [showModal, setShowModal] = useState(false);
 
@@ -59,6 +60,7 @@ const Checkout = () => {
     }
 
     await processPayment(
+      shop,
       totalPrice,
       customerName,
       phone

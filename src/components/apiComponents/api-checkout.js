@@ -1,10 +1,10 @@
 // api-checkout.js
 import { API_URL } from "./api-base-url";
 
-export const processPayment = async (totalPrice, customerName, customerPhone) => {
+export const processPayment = async (shop, totalPrice, customerName, customerPhone) => {
   try {
 
-    const response = await fetch(`${API_URL}/api/checkout`, {
+    const response = await fetch(`${API_URL}/${shop}/api/checkout`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
