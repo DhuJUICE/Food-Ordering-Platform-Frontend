@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllOrders, updateOrderStatus } from "../../apiComponents/api-orders";
 
-const STATUS_OPTIONS = ["pending", "preparing", "done", "cancelled"];
+const STATUS_OPTIONS = ["waiting", "preparing", "done"];
 
 const BusinessDashboardPage = () => {
   const [orders, setOrders] = useState([]);
@@ -42,10 +42,38 @@ const BusinessDashboardPage = () => {
     );
 
     if (updated) {
-      // remove from UI since backend filters collected=false
       setOrders((prev) =>
         prev.filter((o) => o.order_id !== order.order_id)
       );
+    }
+  };
+
+  const getNextStatus = (current) => {
+    const index = STATUS_OPTIONS.indexOf(current);
+    if (index < STATUS_OPTIONS.length - 1) {
+      return STATUS_OPTIONS[index + 1];
+    }
+    return current;
+  };
+
+  const getPrevStatus = (current) => {
+    const index = STATUS_OPTIONS.indexOf(current);
+    if (index > 0) {
+      return STATUS_OPTIONS[index - 1];
+    }
+    return current;
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "waiting":
+        return "bg-yellow-500 hover:bg-yellow-600";
+      case "preparing":
+        return "bg-blue-500 hover:bg-blue-600";
+      case "done":
+        return "bg-green-500 hover:bg-green-600";
+      default:
+        return "bg-gray-500";
     }
   };
 
@@ -78,60 +106,67 @@ const BusinessDashboardPage = () => {
                   className="border-t border-gray-200 hover:bg-gray-50"
                 >
                   {/* ORDER NUMBER */}
-                  <td className="p-3 font-medium">
+                  <td className="p-3 font-medium text-lg">
                     #{order.order_number}
                   </td>
 
                   {/* STATUS */}
                   <td className="p-3">
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          order.order_id,
-                          e.target.value
-                        )
-                      }
-                      className="border border-gray-300 rounded-md p-1 w-full"
-                    >
-                      {STATUS_OPTIONS.map((statusOption) => (
-                        <option key={statusOption} value={statusOption}>
-                          {statusOption.charAt(0).toUpperCase() +
-                            statusOption.slice(1)}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="flex items-center gap-2">
+
+                      <button
+                        onClick={() =>
+                          handleStatusChange(
+                            order.order_id,
+                            getPrevStatus(order.status)
+                          )
+                        }
+                        disabled={order.status === "waiting"}
+                        className="px-3 py-1 rounded-lg bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+                      >
+                        Back
+                      </button>
+
+                      <span className="font-bold capitalize text-lg">
+                        {order.status}
+                      </span>
+
+                      <button
+                        onClick={() =>
+                          handleStatusChange(
+                            order.order_id,
+                            getNextStatus(order.status)
+                          )
+                        }
+                        disabled={order.status === "done"}
+                        className={`px-4 py-1 rounded-lg text-white transition-colors ${getStatusColor(order.status)} disabled:opacity-50`}
+                      >
+                        Next
+                      </button>
+
+                    </div>
                   </td>
 
                   {/* PAYMENT */}
                   <td className="p-3">{order.payment_method}</td>
 
-                  {/* ITEMS */}
+                  {/* ✅ CLEAN ITEMS DISPLAY */}
                   <td className="p-3">
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {order.items.map((item, index) => (
                         <li
                           key={index}
-                          className="flex items-center gap-2 border-b border-gray-100 pb-1"
+                          className="flex items-center gap-4 border-b border-gray-200 pb-2"
                         >
-                          <img
-                            src={
-                              item.product.image ||
-                              "https://via.placeholder.com/50"
-                            }
-                            alt={item.product.name}
-                            className="w-12 h-12 object-cover rounded"
-                          />
+                          {/* BIG QUANTITY */}
+                          <span className="text-2xl font-extrabold text-green-600 min-w-[40px]">
+                            x{item.quantity}
+                          </span>
 
-                          <div className="flex flex-col text-sm">
-                            <span className="font-medium">
-                              {item.product.name}
-                            </span>
-                            <span>
-                              x {item.quantity} - R
-                              {item.price_at_purchase}
-                            </span>
-                          </div>
+                          {/* PRODUCT NAME */}
+                          <span className="text-lg font-semibold text-gray-800">
+                            {item.product.name}
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -142,13 +177,13 @@ const BusinessDashboardPage = () => {
                     R{order.total_amount}
                   </td>
 
-                  {/* COLLECTED BUTTON */}
+                  {/* COLLECTED */}
                   <td className="p-3">
                     <button
                       onClick={() => handleCollected(order)}
-                      className="px-3 py-1 rounded-lg text-white bg-green-500 hover:bg-green-600 transition-colors"
+                      className="px-4 py-2 rounded-lg text-white bg-green-500 hover:bg-green-600 transition-colors font-semibold"
                     >
-                      Mark Collected
+                      Collected
                     </button>
                   </td>
                 </tr>
