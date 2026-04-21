@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../CartPage/cart-context";
 import { clearCartAPI } from "../../apiComponents/api-cart";
 
-const PaymentFailure = ({ orderNumber, total }) => {
+import Button from "../../ui/Button";
+import PageCard from "../../ui/PageCard";
+import StatusIcon from "../../ui/StatusIcon";
+
+const PaymentFailure = () => {
   const navigate = useNavigate();
   const { setCart } = useCart();
 
@@ -19,53 +23,48 @@ const PaymentFailure = ({ orderNumber, total }) => {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="bg-white shadow-xl rounded-xl p-10 md:p-16 w-full max-w-xl text-center">
-        {/* Failure Icon */}
-        <div className="mx-auto mb-6 w-24 h-24 flex items-center justify-center bg-red-100 rounded-full">
-          <svg
-            className="w-12 h-12 text-red-600"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </div>
+    <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
 
-        {/* Updated Failure Text */}
+      <PageCard>
+
+        {/* ICON */}
+        <StatusIcon type="error" />
+
+        {/* TEXT */}
         <h1 className="text-3xl font-bold text-red-600 mb-4">
           Payment Failed or Cancelled
         </h1>
-        <p className="text-gray-700 mb-6">
+
+        <p className="text-gray-700 mb-2">
           Your payment was not completed. This could be due to cancellation,
           insufficient funds, or a network issue.
         </p>
-        <p className="text-sm text-gray-600 mt-2">
+
+        <p className="text-sm text-gray-600 mb-6">
           No charges have been made.
         </p>
 
-        {/* Call-to-Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center py-5">
-          <button
+        {/* ACTIONS */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+          <Button
             onClick={() => navigate("/checkout")}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            className="bg-red-500 hover:bg-red-600"
           >
             Try Again
-          </button>
-          <button
+          </Button>
+
+          <Button
             onClick={handleCancelOrder}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors"
+            className="bg-gray-200 text-gray-800 hover:bg-gray-300"
           >
             Cancel Order
-          </button>
+          </Button>
+
         </div>
-      </div>
+
+      </PageCard>
+
     </main>
   );
 };
