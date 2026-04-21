@@ -1,25 +1,34 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { signIn } from '../apiComponents/api-signIn';
-import { FaEye } from 'react-icons/fa';
 import { useAuth } from './auth-context';
-
+import AuthFormUI from '../ui/AuthForm';
 
 const Sign_In = () => {
   const navigate = useNavigate();
-  const { refreshAuth } = useAuth(); // <-- new
+  const { refreshAuth } = useAuth();
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
 
-  const validateForm = async (event) => {
-    event.preventDefault();
+  const handleChange = (e) => {
+    setForm(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
-    const userName = document.getElementById('email').value;
-    const userPassword = document.getElementById('password').value;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const result = await signIn(userName, userPassword);
+    const result = await signIn(form.email, form.password);
 
     if (result.success) {
-      await refreshAuth(); // update auth context
+      await refreshAuth();
       navigate('/dashboard');
     } else {
       alert(result.message);
@@ -27,42 +36,35 @@ const Sign_In = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-8">
-        <h1 className="text-3xl font-bold text-green-600 text-center mb-6">Login</h1>
-
-        <form id="sign-in-form" onSubmit={validateForm} className="space-y-4">
-          {/* Email */}
-          <div className="flex flex-col">
-            <label htmlFor="email" className="mb-1 text-gray-700 font-medium">Email:</label>
-            <input type="email" name="email" id="email" placeholder="Enter your email" required
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400"/>
-          </div>
-
-          {/* Password */}
-          <div className="flex flex-col relative">
-            <label htmlFor="password" className="mb-1 text-gray-700 font-medium">Password:</label>
-            <input type={showPassword ? "text" : "password"} name="password" id="password" placeholder="Enter your password"
-              minLength="6" required
-              className="border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400"/>
-            <FaEye className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-              onMouseDown={() => setShowPassword(true)}
-              onMouseUp={() => setShowPassword(false)}
-              onMouseLeave={() => setShowPassword(false)}
-            />
-          </div>
-
-          <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition-colors">
-            Login
-          </button>
-        </form>
-
-        <p className="text-center text-gray-600 mt-4">
-          Don’t have an account yet?{" "}
-          <Link to="/sign-up" className="text-green-600 hover:underline">Create</Link>
-        </p>
-      </div>
-    </div>
+    <AuthFormUI
+      title="Sign In"
+      fields={[
+        {
+          label: "Email",
+          name: "email",
+          type: "email",
+          value: form.email,
+          placeholder: "Enter email"
+        },
+        {
+          label: "Password",
+          name: "password",
+          type: "password",
+          value: form.password,
+          placeholder: "Enter password",
+          minLength: 6
+        }
+      ]}
+      showPassword={showPassword}
+      showConfirmPassword={false}
+      onTogglePassword={setShowPassword}
+      onToggleConfirmPassword={() => {}}
+      onChange={handleChange}
+      onSubmit={handleSubmit}
+      footerText="Don’t have an account?"
+      footerAction={() => navigate('/sign-up')}
+      footerLinkText="Create"
+    />
   );
 };
 
