@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { fetchAllOrders, updateOrderStatus } from "../../apiComponents/api-orders";
+import {
+  fetchAllOrders,
+  updateOrderStatus,
+} from "../../apiComponents/api-orders";
+import OrderRow from "../../ui/OrderRow";
 
 const STATUS_OPTIONS = ["waiting", "preparing", "done"];
 
@@ -8,11 +12,7 @@ const BusinessDashboardPage = () => {
 
   const loadOrders = async () => {
     const data = await fetchAllOrders();
-    if (data && data.order_items) {
-      setOrders(data.order_items);
-    } else {
-      setOrders([]);
-    }
+    setOrders(data?.order_items || []);
   };
 
   useEffect(() => {
@@ -23,12 +23,13 @@ const BusinessDashboardPage = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     const updated = await updateOrderStatus(orderId, newStatus);
+
     if (updated) {
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId
-            ? { ...order, status: newStatus }
-            : order
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.order_id === orderId
+            ? { ...o, status: newStatus }
+            : o
         )
       );
     }
@@ -49,19 +50,13 @@ const BusinessDashboardPage = () => {
   };
 
   const getNextStatus = (current) => {
-    const index = STATUS_OPTIONS.indexOf(current);
-    if (index < STATUS_OPTIONS.length - 1) {
-      return STATUS_OPTIONS[index + 1];
-    }
-    return current;
+    const i = STATUS_OPTIONS.indexOf(current);
+    return STATUS_OPTIONS[i + 1] || current;
   };
 
   const getPrevStatus = (current) => {
-    const index = STATUS_OPTIONS.indexOf(current);
-    if (index > 0) {
-      return STATUS_OPTIONS[index - 1];
-    }
-    return current;
+    const i = STATUS_OPTIONS.indexOf(current);
+    return STATUS_OPTIONS[i - 1] || current;
   };
 
   const getStatusColor = (status) => {
@@ -79,6 +74,7 @@ const BusinessDashboardPage = () => {
 
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto">
+
       <h1 className="text-3xl font-bold text-gray-800 mb-6">
         Business Dashboard
       </h1>
@@ -87,7 +83,9 @@ const BusinessDashboardPage = () => {
         <p className="text-gray-500">No active orders.</p>
       ) : (
         <div className="overflow-x-auto">
+
           <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+
             <thead className="bg-gray-100 text-gray-700">
               <tr>
                 <th className="p-3 text-left">Order #</th>
@@ -101,97 +99,23 @@ const BusinessDashboardPage = () => {
 
             <tbody>
               {orders.map((order) => (
-                <tr
+                <OrderRow
                   key={order.order_id}
-                  className="border-t border-gray-200 hover:bg-gray-50"
-                >
-                  {/* ORDER NUMBER */}
-                  <td className="p-3 font-medium text-lg">
-                    #{order.order_number}
-                  </td>
-
-                  {/* STATUS */}
-                  <td className="p-3">
-                    <div className="flex items-center gap-2">
-
-                      <button
-                        onClick={() =>
-                          handleStatusChange(
-                            order.order_id,
-                            getPrevStatus(order.status)
-                          )
-                        }
-                        disabled={order.status === "waiting"}
-                        className="px-3 py-1 rounded-lg bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
-                      >
-                        Back
-                      </button>
-
-                      <span className="font-bold capitalize text-lg">
-                        {order.status}
-                      </span>
-
-                      <button
-                        onClick={() =>
-                          handleStatusChange(
-                            order.order_id,
-                            getNextStatus(order.status)
-                          )
-                        }
-                        disabled={order.status === "done"}
-                        className={`px-4 py-1 rounded-lg text-white transition-colors ${getStatusColor(order.status)} disabled:opacity-50`}
-                      >
-                        Next
-                      </button>
-
-                    </div>
-                  </td>
-
-                  {/* PAYMENT */}
-                  <td className="p-3">{order.payment_method}</td>
-
-                  {/* ✅ CLEAN ITEMS DISPLAY */}
-                  <td className="p-3">
-                    <ul className="space-y-3">
-                      {order.items.map((item, index) => (
-                        <li
-                          key={index}
-                          className="flex items-center gap-4 border-b border-gray-200 pb-2"
-                        >
-                          {/* BIG QUANTITY */}
-                          <span className="text-2xl font-extrabold text-green-600 min-w-[40px]">
-                            x{item.quantity}
-                          </span>
-
-                          {/* PRODUCT NAME */}
-                          <span className="text-lg font-semibold text-gray-800">
-                            {item.product.name}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </td>
-
-                  {/* TOTAL */}
-                  <td className="p-3 font-semibold">
-                    R{order.total_amount}
-                  </td>
-
-                  {/* COLLECTED */}
-                  <td className="p-3">
-                    <button
-                      onClick={() => handleCollected(order)}
-                      className="px-4 py-2 rounded-lg text-white bg-green-500 hover:bg-green-600 transition-colors font-semibold"
-                    >
-                      Collected
-                    </button>
-                  </td>
-                </tr>
+                  order={order}
+                  onStatusChange={handleStatusChange}
+                  onCollected={handleCollected}
+                  getNextStatus={getNextStatus}
+                  getPrevStatus={getPrevStatus}
+                  getStatusColor={getStatusColor}
+                />
               ))}
             </tbody>
+
           </table>
+
         </div>
       )}
+
     </div>
   );
 };
