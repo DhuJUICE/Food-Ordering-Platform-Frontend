@@ -18,7 +18,7 @@ const MenuSection = ({
           <p className="text-gray-500">No products available.</p>
         </div>
       ) : (
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 place-items-center">
 
           {products.map((product) => (
             <ProductCard

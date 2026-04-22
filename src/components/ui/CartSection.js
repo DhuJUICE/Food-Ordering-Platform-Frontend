@@ -12,7 +12,7 @@ const CartSection = ({
   onCheckout,
 }) => {
   return (
-    <section className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <section className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-4 sm:p-6">
 
       <h2 className="text-2xl font-bold text-green-600 mb-6 text-center">
         My Order
@@ -24,7 +24,7 @@ const CartSection = ({
         </p>
       ) : (
         <>
-          <div className="grid gap-6">
+          <div className="flex flex-col gap-4">
             {cart.map((item) => (
               <CartItem
                 key={item.id}
@@ -37,8 +37,8 @@ const CartSection = ({
             ))}
           </div>
 
-          {/* Summary */}
-          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center bg-gray-100 rounded-lg p-4">
+          {/* SUMMARY */}
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-between items-center bg-gray-100 rounded-lg p-4 gap-3 sm:gap-0">
 
             <p className="text-lg font-semibold text-gray-800">
               Subtotal:{" "}

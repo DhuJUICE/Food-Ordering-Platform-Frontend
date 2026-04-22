@@ -9,7 +9,8 @@ const ShopSelectionSection = ({ shops, onSelectShop }) => {
         <Button
           key={shop}
           onClick={() => onSelectShop(shop)}
-          className="text-lg px-6 py-4 bg-white text-gray-700 hover:bg-green-500 hover:text-white shadow-lg hover:shadow-2xl transform hover:-translate-y-1"
+          variant="default"
+          className="text-lg px-6 py-4"
         >
           {shop.charAt(0).toUpperCase() + shop.slice(1)}
         </Button>

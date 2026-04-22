@@ -8,7 +8,7 @@ const ButtonUI = ({
   type = "button",
 }) => {
   const base =
-    "text-sm px-4 py-2 rounded-md transition font-medium flex items-center justify-center gap-2";
+    "px-4 py-2 text-sm rounded-md transition font-medium flex items-center justify-center gap-2";
 
   const variants = {
     default: "bg-gray-900 text-white hover:bg-gray-800",
