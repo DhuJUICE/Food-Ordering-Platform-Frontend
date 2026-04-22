@@ -1,47 +1,65 @@
 import React from "react";
-import ProductRow from "./ProductRow";
+import Button from "./Button";
 
-const ProductTable = ({
-  products,
-  editingProductId,
-  editData,
-  onEdit,
-  onSave,
-  onCancel,
-  onChange,
-  onDelete,
-}) => {
+const ProductTable = ({ products, onEdit, onDelete }) => {
   return (
-    <div className="overflow-x-auto">
+    <div className="mt-6 space-y-4">
 
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+      {products.map((p) => (
+        <div
+          key={p.id}
+          className="bg-white border rounded-lg shadow-sm p-4 flex flex-col gap-3"
+        >
 
-        <thead>
-          <tr className="bg-gray-100 text-gray-700">
-            <th className="p-3 text-left">Image</th>
-            <th className="p-3 text-left">Name</th>
-            <th className="p-3 text-left">Price (R)</th>
-            <th className="p-3 text-left">Actions</th>
-          </tr>
-        </thead>
+          {/* TOP ROW: image + details */}
+          <div className="flex items-center gap-4">
 
-        <tbody>
-          {products.map((product) => (
-            <ProductRow
-              key={product.id}
-              product={product}
-              isEditing={editingProductId === product.id}
-              editData={editData}
-              onEdit={onEdit}
-              onSave={onSave}
-              onCancel={onCancel}
-              onChange={onChange}
-              onDelete={onDelete}
-            />
-          ))}
-        </tbody>
+            {/* IMAGE */}
+            <div className="w-20 h-20 shrink-0 overflow-hidden rounded-md bg-gray-100">
+              <img
+                src={p.image}
+                alt={p.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-      </table>
+            {/* NAME + PRICE */}
+            <div className="flex flex-col min-w-0">
+
+              <h3 className="text-lg font-semibold text-gray-800 truncate">
+                {p.name}
+              </h3>
+
+              <p className="text-green-600 font-bold">
+                R {p.price}
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* ACTION BUTTONS (UNDERNEATH, FULL WIDTH ON MOBILE) */}
+          <div className="flex gap-2">
+
+            <Button
+              onClick={() => onEdit(p)}
+              className="flex-1"
+            >
+              Edit
+            </Button>
+
+            <Button
+              variant="danger"
+              onClick={() => onDelete(p.id)}
+              className="flex-1"
+            >
+              Delete
+            </Button>
+
+          </div>
+
+        </div>
+      ))}
 
     </div>
   );

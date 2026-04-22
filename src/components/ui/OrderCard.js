@@ -5,27 +5,21 @@ import { FaClock, FaCreditCard } from "react-icons/fa";
 
 const OrderCard = ({ order }) => {
   return (
-    <div className="bg-white shadow-lg rounded-xl p-6 border">
+    <div className="bg-white shadow-md rounded-xl p-5 border space-y-3">
 
       {/* HEADER */}
-      <div className="flex justify-between items-start mb-4">
-        <h2 className="text-xl font-semibold">
+      <div className="flex justify-between items-start">
+
+        <h2 className="text-lg font-semibold">
           Order #{order.order_number}
         </h2>
 
-        <div className="flex gap-2">
-          <OrderStatusBadge status={order.status} />
+        <OrderStatusBadge status={order.status} />
 
-          {order.is_collected && (
-            <span className="bg-gray-300 text-gray-700 px-2 py-1 rounded-full text-xs">
-              Collected
-            </span>
-          )}
-        </div>
       </div>
 
       {/* META */}
-      <div className="flex gap-6 text-sm text-gray-600 mb-4">
+      <div className="flex flex-wrap gap-4 text-xs text-gray-600">
 
         <div className="flex items-center gap-1">
           <FaCreditCard />
@@ -39,10 +33,16 @@ const OrderCard = ({ order }) => {
           </div>
         )}
 
+        {order.is_collected && (
+          <span className="bg-gray-300 text-gray-700 px-2 py-1 rounded-full">
+            Collected
+          </span>
+        )}
+
       </div>
 
-      {/* ITEMS */}
-      <div className="grid gap-3">
+      {/* ITEMS (NO INDIVIDUAL CARDS) */}
+      <div className="divide-y divide-gray-100">
 
         {order.items.map((item, i) => (
           <OrderItemCard key={i} item={item} />
@@ -51,7 +51,7 @@ const OrderCard = ({ order }) => {
       </div>
 
       {/* TOTAL */}
-      <div className="text-right font-semibold mt-4">
+      <div className="text-right font-semibold pt-2 border-t">
         Total: R{order.total_amount}
       </div>
 
